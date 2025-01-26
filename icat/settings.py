@@ -10,9 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
-from pathlib import Path
 import os
 import sys
+from pathlib import Path
 
 import dj_database_url
 
@@ -40,6 +40,7 @@ sys.path.insert(0, project_base('apps'))
 
 # Extra Settings
 AUTH_USER_MODEL = 'custom_auth.User'
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Application definition
 
@@ -50,13 +51,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+    'corsheaders',
+    'rest_framework',
+
     'dal',
     'custom_auth',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
