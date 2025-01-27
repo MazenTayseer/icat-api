@@ -29,13 +29,28 @@ sys.path.insert(0, project_base('apps'))
 # Extra Settings
 AUTH_USER_MODEL = 'custom_auth.User'
 
-# CORS settings to allow the Next.js frontend
-CORS_ALLOW_ALL_ORIGINS = False  
+ # CSRF
+    # Either Update Axios settings or Django Settings
+CSRF_COOKIE_NAME = 'XSRF-TOKEN'
+CSRF_HEADER_NAME = 'HTTP_X_XSRF_TOKEN'
+
+# CORS
+CORS_ALLOW_ALL_ORIGINS = True # Do not run your production server with this setting
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  
+
+from corsheaders.defaults import default_headers
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'x-xsrf-token',
+    'access-control-allow-headers', # this one is important
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000',
+    ]
+
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:3000',
+    ]
 
 # Application definition
 

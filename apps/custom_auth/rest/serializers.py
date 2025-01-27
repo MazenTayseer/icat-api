@@ -10,7 +10,6 @@ class SignUpSerializer(serializers.ModelSerializer):
     password1 = serializers.CharField(
         write_only=True,
         required=True,
-        help_text="Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.",
         validators=[validate_password]
     )
     password2 = serializers.CharField(
