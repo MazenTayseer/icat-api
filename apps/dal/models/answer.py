@@ -22,6 +22,14 @@ class Answer(models.Model):
 
     class Meta:
         app_label = 'dal'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['question'],
+                condition=models.Q(is_correct=True),
+                name='unique_correct_answer_per_question'
+            )
+        ]
+
 
     def __str__(self):
         return self.text
