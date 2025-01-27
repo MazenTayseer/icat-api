@@ -23,44 +23,12 @@ class SignUpSerializer(serializers.ModelSerializer):
         fields = ['email', 'first_name', 'last_name', 'password1', 'password2']
 
     def validate(self, attrs):
-        email = attrs.get('email', '').strip()
-        first_name = attrs.get('first_name', '').strip()
-        last_name = attrs.get('last_name', '').strip()
         password1 = attrs.get('password1', '')
         password2 = attrs.get('password2', '')
-
-        if not email or not first_name or not last_name:
-            raise serializers.ValidationError(
-                {"fields": "First name, last name, and email cannot be empty."}
-            )
-
-        email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
-        if not re.match(email_regex, email):
-            raise serializers.ValidationError(
-                {"email": "Invalid email format."}
-            )
 
         if password1 != password2:
             raise serializers.ValidationError(
                 {"password": "Password fields didn't match."}
-            )
-
-        # Validate password strength
-        if not re.search(r'[A-Z]', password1):
-            raise serializers.ValidationError(
-                {"password": "Password must contain at least one uppercase letter."}
-            )
-        if not re.search(r'[a-z]', password1):
-            raise serializers.ValidationError(
-                {"password": "Password must contain at least one lowercase letter."}
-            )
-        if not re.search(r'[0-9]', password1):
-            raise serializers.ValidationError(
-                {"password": "Password must contain at least one digit."}
-            )
-        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password1):
-            raise serializers.ValidationError(
-                {"password": "Password must contain at least one special character."}
             )
 
         return attrs
@@ -70,6 +38,7 @@ class SignUpSerializer(serializers.ModelSerializer):
         password = validated_data.pop('password1')
         user = User.objects.create_user(password=password, **validated_data)
         return user
+
 
 
 
