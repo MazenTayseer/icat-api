@@ -57,6 +57,7 @@ INSTALLED_APPS = [
 
     'dal',
     'custom_auth',
+    'dashboard',
 ]
 
 MIDDLEWARE = [
