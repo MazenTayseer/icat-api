@@ -17,6 +17,8 @@ class User(AbstractUser):
     email = models.EmailField(unique=True, blank=False, null=False)
     username = models.CharField(max_length=150, blank=True, null=True, unique=True)
     
+    password = models.CharField(max_length=255, blank=False, null=False)
+    
     experience_level = models.CharField(
         choices=ExperienceLevels.CHOICES,
         default=ExperienceLevels.BEGINNER,
