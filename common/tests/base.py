@@ -1,3 +1,5 @@
+import json
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import TestCase
@@ -28,11 +30,11 @@ class BaseTestCase(TestCase):
         Helper method to send authenticated requests.
         """
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.auth_token}")
-        return self.client.generic(method, url, data, **kwargs)
+        return self.client.generic(method, url, json.dumps(data), content_type='application/json', **kwargs)
 
     def send_unauth_request(self, method, url, data=None, **kwargs):
         """
         Helper method to send unauthenticated requests.
         """
         self.client.credentials()
-        return self.client.generic(method, url, data, **kwargs)
+        return self.client.generic(method, url, json.dumps(data), content_type='application/json', **kwargs)

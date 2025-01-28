@@ -10,7 +10,7 @@ class Assessment(models.Model):
         default=generate_uuid,
     )
     name = models.CharField(max_length=255, blank=False, null=False)
-    max_score = models.FloatField(default=100, blank=False, null=False)
+    max_score = models.IntegerField(default=0)
     module = models.ForeignKey(
         'Module',
         on_delete=models.CASCADE,
@@ -44,6 +44,8 @@ class UserAssessments(models.Model):
         related_name='users',
     )
     score = models.FloatField(blank=False, null=False)
+    score_percentage = models.FloatField(blank=False, null=False)
+    is_passed = models.BooleanField(blank=False, null=False)
     trial = models.PositiveIntegerField(blank=False, null=False)
 
     created_at = models.DateTimeField(auto_now_add=True)

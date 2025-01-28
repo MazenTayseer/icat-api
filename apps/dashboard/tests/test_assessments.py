@@ -1,6 +1,7 @@
 
 from apps.dashboard.tests.base import DashboardBaseTestCase
-from apps.dashboard.tests.factory import AssessmentFactory, ModuleFactory
+from apps.dashboard.tests.factory import (AnswerFactory, AssessmentFactory,
+                                          ModuleFactory, QuestionFactory)
 
 
 class AssessmentsTestCases(DashboardBaseTestCase):
@@ -8,6 +9,15 @@ class AssessmentsTestCases(DashboardBaseTestCase):
         self.module = ModuleFactory()
         self.assessment_1 = AssessmentFactory(name='Assessment 1', module=self.module)
         self.assessment_2 = AssessmentFactory(name='Assessment 2', module=self.module)
+
+        self.question_1_1 = QuestionFactory(assessment=self.assessment_1)
+        self.question_1_2 = QuestionFactory(assessment=self.assessment_1)
+
+        AnswerFactory(question=self.question_1_1)
+        AnswerFactory(question=self.question_1_1)
+
+        AnswerFactory(question=self.question_1_2)
+        AnswerFactory(question=self.question_1_2)
         super().setUp()
 
     def test_get_all_assessment(self):
@@ -25,3 +35,5 @@ class AssessmentsTestCases(DashboardBaseTestCase):
         self.assertEqual(response.data.get("id"), self.assessment_1.id)
         self.assertEqual(response.data.get("name"), 'Assessment 1')
         self.assertEqual(response.data.get("module"), self.module.id)
+        self.assertEqual(len(response.data.get("questions")), 2)
+        self.assertEqual(len(response.data.get("questions")[0].get("answers")), 2)
