@@ -39,6 +39,7 @@ CORS_ALLOW_ALL_ORIGINS = True # Do not run your production server with this sett
 CORS_ALLOW_CREDENTIALS = True
 
 from corsheaders.defaults import default_headers
+
 CORS_ALLOW_HEADERS = list(default_headers) + [
     'x-xsrf-token',
     'access-control-allow-headers', # this one is important
@@ -176,3 +177,8 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
 }
+
+
+# Env Variables
+
+BASE_URL = os.environ.get('BASE_URL')
