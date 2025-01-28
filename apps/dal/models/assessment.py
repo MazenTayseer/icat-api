@@ -44,11 +44,16 @@ class UserAssessments(models.Model):
         related_name='users',
     )
     score = models.FloatField(blank=False, null=False)
-    trial = models.IntegerField(blank=False, null=False)
+    trial = models.PositiveIntegerField(blank=False, null=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+
+    def save(self, *args, **kwargs):
+        if not self.trial:
+            self.trial = UserAssessments.objects.filter(user=self.user, assessment=self.assessment).count() + 1
+        super().save(*args, **kwargs)
 
     class Meta:
         app_label = 'dal'
