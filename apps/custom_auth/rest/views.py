@@ -48,7 +48,15 @@ class SignInView(APIView):
                 key='refresh_token',
                 value=refresh_token,
                 httponly=True,
+                samesite='Lax',
                 max_age=settings.REFRESH_TOKEN_LIFETIME,
+            )
+            response.set_cookie(
+                key='access_token',
+                value=access_token,
+                httponly=True,
+                samesite='Lax',
+                max_age=settings.ACCESS_TOKEN_LIFETIME,
             )
             return response
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -66,6 +74,19 @@ class RefreshTokenView(APIView):
         try:
             refresh = RefreshToken(refresh_token)
             access_token = str(refresh.access_token)
-            return Response({'access': access_token}, status=status.HTTP_200_OK)
+
+            response = Response({
+                'message': 'Token refreshed successfully',
+            }, status=status.HTTP_200_OK)
+
+            response.set_cookie(
+                key='access_token',
+                value=access_token,
+                httponly=True,
+                secure=True,
+                samesite='Lax',
+                max_age=settings.ACCESS_TOKEN_LIFETIME,
+            )
+            return response
         except TokenError as e:
             raise InvalidToken(e.args[0])
