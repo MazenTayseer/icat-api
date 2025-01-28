@@ -1,7 +1,9 @@
 from django.conf import settings
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -45,16 +47,14 @@ class SignInView(APIView):
             }, status=status.HTTP_200_OK)
 
             response.set_cookie(
-                key='refresh_token',
+                key='refreshToken',
                 value=refresh_token,
-                httponly=True,
                 samesite='Lax',
                 max_age=settings.REFRESH_TOKEN_LIFETIME,
             )
             response.set_cookie(
-                key='access_token',
+                key='token',
                 value=access_token,
-                httponly=True,
                 samesite='Lax',
                 max_age=settings.ACCESS_TOKEN_LIFETIME,
             )
@@ -80,13 +80,37 @@ class RefreshTokenView(APIView):
             }, status=status.HTTP_200_OK)
 
             response.set_cookie(
-                key='access_token',
+                key='token',
                 value=access_token,
                 httponly=True,
-                secure=True,
                 samesite='Lax',
                 max_age=settings.ACCESS_TOKEN_LIFETIME,
             )
             return response
         except TokenError as e:
             raise InvalidToken(e.args[0])
+
+
+class UserView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        data = {
+            'id': user.id,
+            'experience_level': user.experience_level,
+            'username': user.username,
+            'email': user.email,
+        }
+        return Response(data, status=status.HTTP_200_OK)
+
+class LogoutView(APIView):
+    def post(self, request, *args, **kwargs):
+        response = Response(
+            {"message": "Logout successful."},
+            status=status.HTTP_200_OK
+        )
+        response.delete_cookie('token')
+        response.delete_cookie('refreshToken')
+        return response
