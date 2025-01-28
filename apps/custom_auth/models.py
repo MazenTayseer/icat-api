@@ -16,9 +16,7 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=255, blank=False, null=False)
     email = models.EmailField(unique=True, blank=False, null=False)
     username = models.CharField(max_length=150, blank=True, null=True, unique=True)
-    
-    password = models.CharField(max_length=255, blank=False, null=False)
-    
+
     experience_level = models.CharField(
         choices=ExperienceLevels.CHOICES,
         default=ExperienceLevels.BEGINNER,
@@ -26,17 +24,17 @@ class User(AbstractUser):
         blank=False,
         null=False
     )
-        
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     objects = CustomUserManager()
-    
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
     class Meta:
         app_label = 'custom_auth'
-    
+
     def __str__(self):
         return self.email
