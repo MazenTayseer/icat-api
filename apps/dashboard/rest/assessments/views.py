@@ -15,9 +15,16 @@ class AssessmentDashboardListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        assessments = Assessment.objects.all()
+        module_id = request.query_params.get("module_id", None)
+
+        if module_id:
+            assessments = Assessment.objects.filter(module_id=module_id)
+        else:
+            assessments = Assessment.objects.all()
+
         serializer = AssessmentListSerializer(assessments, many=True)
         return Response(serializer.data)
+
 
 class AssessmentDashboardDetailView(APIView):
     authentication_classes = [JWTAuthentication]
