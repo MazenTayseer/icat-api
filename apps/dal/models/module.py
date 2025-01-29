@@ -10,7 +10,8 @@ class Module(models.Model):
         default=generate_uuid,
     )
     name = models.CharField(max_length=255, blank=False, null=False)
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=False, null=False)
+    text = models.JSONField(blank=False, null=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
