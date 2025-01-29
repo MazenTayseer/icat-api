@@ -11,7 +11,7 @@ class Module(models.Model):
     )
     name = models.CharField(max_length=255, blank=False, null=False)
     description = models.TextField(blank=False, null=False)
-    text = models.JSONField(blank=False, null=False)
+    text = models.JSONField(blank=False, null=False, default=list)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
