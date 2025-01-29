@@ -15,7 +15,7 @@ class BaseTestCase(TestCase):
             email="test@test.com",
             password="Test1234"
         )
-        self.auth_token = self._get_auth_token(self.user.email, "Test1234")
+        self.auth_token, self.refresh_token = self._get_auth_token(self.user.email, "Test1234")
 
     def _get_auth_token(self, email, password):
         response = self.client.post(
@@ -23,7 +23,7 @@ class BaseTestCase(TestCase):
             {"email": email, "password": password},
             format="json"
         )
-        return response.data.get("access")
+        return response.data.get("access"), response.cookies.get("refreshToken")
 
     def send_auth_request(self, method, url, data=None, **kwargs):
         """

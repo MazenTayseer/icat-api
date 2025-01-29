@@ -15,6 +15,8 @@ class Assessment(models.Model):
         'Module',
         on_delete=models.CASCADE,
         related_name='assessments',
+        blank=True,
+        null=True,
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
