@@ -1,3 +1,4 @@
 ## TODO
 
-- Handle refresh token logic properly
+- Review Auth
+- Celery not working (Investigate)

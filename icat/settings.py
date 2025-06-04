@@ -182,3 +182,4 @@ SIMPLE_JWT = {
 # Env Variables
 
 BASE_URL = os.environ.get('BASE_URL')
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
