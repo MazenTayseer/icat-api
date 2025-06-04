@@ -16,6 +16,6 @@ app.autodiscover_tasks(['common.tasks.tasks'])
 app.conf.beat_schedule = {
     'send_phising_email': {
         'task': 'common.tasks.tasks.send_phising_email',
-        'schedule': crontab(minute='*'),
+        'schedule': crontab(hour=6, minute=0),
     }
 }
