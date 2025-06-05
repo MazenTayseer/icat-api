@@ -1,7 +1,7 @@
 import factory
 
 from apps.dal.models import Assessment
-from apps.dashboard.tests.factory.ModuleFactory import ModuleFactory
+from common.tests.factory.ModuleFactory import ModuleFactory
 
 
 class AssessmentFactory(factory.django.DjangoModelFactory):

@@ -64,6 +64,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+
+    # Apps
     'dal',
     'custom_auth',
     'dashboard',
@@ -85,7 +87,7 @@ ROOT_URLCONF = 'icat.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -178,8 +180,23 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': False,
 }
 
+# Email Settings
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+
 
 # Env Variables
 
 BASE_URL = os.environ.get('BASE_URL')
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
+
+## OLLAMA ENV VARIABLES
+
+OLLAMA_HOST  = os.environ.get("OLLAMA_HOST")
+OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL")

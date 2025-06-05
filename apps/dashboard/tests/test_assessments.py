@@ -1,7 +1,6 @@
-
 from apps.dashboard.tests.base import DashboardBaseTestCase
-from apps.dashboard.tests.factory import (AnswerFactory, AssessmentFactory,
-                                          ModuleFactory, QuestionFactory)
+from common.tests.factory import (AnswerFactory, AssessmentFactory,
+                                  ModuleFactory, QuestionFactory)
 
 
 class AssessmentsTestCases(DashboardBaseTestCase):
@@ -13,11 +12,11 @@ class AssessmentsTestCases(DashboardBaseTestCase):
         self.question_1_1 = QuestionFactory(assessment=self.assessment_1)
         self.question_1_2 = QuestionFactory(assessment=self.assessment_1)
 
-        AnswerFactory(question=self.question_1_1)
-        AnswerFactory(question=self.question_1_1)
+        AnswerFactory(question=self.question_1_1, is_correct=True)
+        AnswerFactory(question=self.question_1_1, is_correct=False)
 
-        AnswerFactory(question=self.question_1_2)
-        AnswerFactory(question=self.question_1_2)
+        AnswerFactory(question=self.question_1_2, is_correct=True)
+        AnswerFactory(question=self.question_1_2, is_correct=False)
         super().setUp()
 
     def test_get_all_assessment(self):

@@ -1,7 +1,7 @@
 import factory
 
 from apps.dal.models import Answer
-from apps.dashboard.tests.factory.QuestionFactory import QuestionFactory
+from common.tests.factory.QuestionFactory import QuestionFactory
 
 
 class AnswerFactory(factory.django.DjangoModelFactory):
@@ -10,4 +10,4 @@ class AnswerFactory(factory.django.DjangoModelFactory):
 
     question = factory.SubFactory(QuestionFactory)
     text = factory.Faker('text')
-    is_correct = factory.Faker('boolean')
+    is_correct = False
