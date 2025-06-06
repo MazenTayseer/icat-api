@@ -22,14 +22,11 @@ class Answer(models.Model):
 
     class Meta:
         app_label = 'dal'
-        constraints = [
-            models.UniqueConstraint(
-                fields=['question'],
-                condition=models.Q(is_correct=True),
-                name='unique_correct_answer_per_question'
-            )
-        ]
 
+    def save(self, *args, **kwargs):
+        if self.is_correct and Answer.objects.filter(question=self.question, is_correct=True).exclude(id=self.id).exists():
+            raise ValueError("Only one answer can be correct per question")
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.text

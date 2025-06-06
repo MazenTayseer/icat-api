@@ -1,7 +1,7 @@
 
 from apps.dashboard.tests.base import DashboardBaseTestCase
-from apps.dashboard.tests.factory import (AnswerFactory, AssessmentFactory,
-                                          ModuleFactory, QuestionFactory)
+from common.tests.factory import (AnswerFactory, AssessmentFactory,
+                                  ModuleFactory, QuestionFactory)
 
 
 class AssessmentsTestCases(DashboardBaseTestCase):

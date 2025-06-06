@@ -4,18 +4,20 @@ from apps.dal.models.enums.user_simulation_status import UserSimulationStatus
 from common.utils import generate_uuid
 
 
-class Simulation(models.Model):
+class PhishingScenario(models.Model):
     id = models.CharField(
         primary_key=True,
         max_length=255,
         default=generate_uuid,
     )
-    name = models.CharField(max_length=255, blank=False, null=False)
-    module = models.ForeignKey(
-        'Module',
+    simulation = models.ForeignKey(
+        'Simulation',
         on_delete=models.CASCADE,
         related_name='simulations',
     )
+    tag = models.CharField(max_length=255, blank=False, null=False)
+    subject = models.CharField(max_length=255, blank=False, null=False)
+    seed = models.TextField(blank=False, null=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -24,10 +26,10 @@ class Simulation(models.Model):
         app_label = 'dal'
 
     def __str__(self):
-        return self.name
+        return self.tag
 
 
-class UserSimulation(models.Model):
+class UserPhishingScenario(models.Model):
     id = models.CharField(
         primary_key=True,
         max_length=255,
@@ -38,14 +40,14 @@ class UserSimulation(models.Model):
         on_delete=models.CASCADE,
         related_name='simulations'
     )
-    simulation = models.ForeignKey(
-        'Simulation',
+    phishing_scenario = models.ForeignKey(
+        'PhishingScenario',
         on_delete=models.CASCADE,
         related_name='users',
     )
     status = models.CharField(
         choices=UserSimulationStatus.CHOICES,
-        default=UserSimulationStatus.IN_PROGRESS,
+        default=UserSimulationStatus.IDLE,
         max_length=255,
         blank=False,
         null=False
@@ -56,12 +58,6 @@ class UserSimulation(models.Model):
 
     class Meta:
         app_label = 'dal'
-        constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'simulation'],
-                name='unique_user_simulation'
-            )
-        ]
 
     def __str__(self):
-        return f'{self.user.email} - {self.simulation}'
+        return f'{self.user.email} - {self.phishing_scenario.tag}'

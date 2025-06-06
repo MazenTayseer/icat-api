@@ -22,8 +22,6 @@ class SignUpView(APIView):
                 status=status.HTTP_201_CREATED
             )
         else:
-            print("Serializer errors:", serializer.errors)
-
             return Response(
                 {"errors": serializer.errors},  # JSON with error details
                 status=status.HTTP_400_BAD_REQUEST

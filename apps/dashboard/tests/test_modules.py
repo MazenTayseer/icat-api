@@ -1,6 +1,6 @@
 
 from apps.dashboard.tests.base import DashboardBaseTestCase
-from apps.dashboard.tests.factory import ModuleFactory
+from common.tests.factory import ModuleFactory
 
 
 class ModuleTestCases(DashboardBaseTestCase):

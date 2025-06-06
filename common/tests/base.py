@@ -1,19 +1,19 @@
 import json
 
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.test import TestCase
 from rest_framework.test import APIClient
 
-User = get_user_model()
+from common.tests.factory.UserFactory import UserFactory
 
 
 class BaseTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = User.objects.create_user(
+        self.user = UserFactory(
             email="test@test.com",
-            password="Test1234"
+            password="Test1234",
+            is_superuser=True
         )
         self.auth_token, self.refresh_token = self._get_auth_token(self.user.email, "Test1234")
 

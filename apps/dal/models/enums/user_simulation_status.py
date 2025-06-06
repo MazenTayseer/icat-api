@@ -1,8 +1,10 @@
 class UserSimulationStatus:
-    IN_PROGRESS = 'IN_PROGRESS'
-    COMPLETED = 'COMPLETED'
+    IDLE = 'IDLE'
+    PASSED = 'PASSED'
+    FAILED = 'FAILED'
 
     CHOICES = (
-        (IN_PROGRESS, 'In Progress'),
-        (COMPLETED, 'Completed'),
+        (IDLE, 'In Progress'),
+        (PASSED, 'Passed'),
+        (FAILED, 'Failed'),
     )
