@@ -18,7 +18,7 @@ SECRET_KEY = 'django-insecure-s=i^+ytx$d-1d4r6*f05)5+3-i_==zyyy+^@ua%okx!k(y@jk@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '10.0.2.2']
 
 def project_base(f=''):
     return os.path.join(BASE_DIR, f)
