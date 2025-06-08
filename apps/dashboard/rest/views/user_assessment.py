@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from apps.dashboard.rest.user_assessment.serializers import \
-    AssessmentSubmissionSerializer
+from apps.dashboard.rest.serializers.user_assessment import \
+    SubmissionSerializer
 
 
 class AssessmentSubmissionView(APIView):
@@ -13,13 +13,13 @@ class AssessmentSubmissionView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, assessment_id, *args, **kwargs):
-        serializer = AssessmentSubmissionSerializer(
-            data=request.data,
-            context={
-                "request": request,
-                "assessment_id": assessment_id
-            }
-        )
+        answers = request.data.get('answers')
+        data = {
+            "answers": answers,
+            "assessment": assessment_id,
+            "user": request.user
+        }
+        serializer = SubmissionSerializer(data=data)
         if serializer.is_valid():
             user_assessment = serializer.save()
             return Response(

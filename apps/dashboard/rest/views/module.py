@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from apps.dal.models import Module
-from apps.dashboard.rest.modules.serializers import ModuleDashboardSerializer
+from apps.dashboard.rest.serializers.module import ModuleDashboardSerializer
 
 
 class ModuleDashboardView(APIView):

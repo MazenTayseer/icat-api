@@ -2,4 +2,6 @@
 
 - Review Auth
 - Simulation usage not clear
-- test sending emails live
+- test sending emails live ✅
+- check max score calculation
+- CONTINUE USER ASSESSMENTS

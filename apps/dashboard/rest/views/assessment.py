@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from apps.dal.models import Assessment
-from apps.dashboard.rest.assessments.serializers import (
+from apps.dashboard.rest.serializers.assessment import (
     AssessmentListSerializer, AssessmentSerializer)
 
 
