@@ -10,7 +10,7 @@ class SubmissionSerializer(serializers.Serializer):
     assessment = serializers.PrimaryKeyRelatedField(queryset=Assessment.objects.all(), required=True)
     answers = AnswerInputSerializer(required=True)
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=True)
-
+    # Format data for AI, to calculate score
 
     def validate(self, data):
         assessment = data.get('assessment')
