@@ -1,11 +1,12 @@
 amqp==5.2.0
 celery==5.3.6
-Django==5.1.4
-django-cors-headers==4.6.0
-djangorestframework==3.15.2
-djangorestframework-simplejwt==5.4.0
 dj-database-url==2.3.0
+django-cors-headers==4.6.0
+django==5.1.4
+djangorestframework-simplejwt==5.4.0
+djangorestframework==3.15.2
 factory_boy==3.3.1
+ipdb==0.13.13
 kombu==5.3.5
 mysqlclient==2.2.6
 ollama==0.5.1

@@ -1,0 +1,97 @@
+services:
+  app:
+    build: .
+    restart: on-failure
+    volumes:
+      - .:/opt/app
+    command: >
+      bash -c "python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    stdin_open: true
+    tty: true
+    env_file:
+      - docker-compose.env
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  celery:
+    build: .
+    restart: unless-stopped
+    command: celery -A icat worker -l INFO
+    volumes:
+      - .:/opt/app
+    env_file:
+      - docker-compose.env
+    depends_on:
+      - rabbitmq
+      - mysql
+      - app
+
+  celery-beat:
+    build: .
+    restart: unless-stopped
+    command: celery -A icat beat -l INFO
+    volumes:
+      - .:/opt/app
+    env_file:
+      - docker-compose.env
+    depends_on:
+      - rabbitmq
+      - celery
+
+  run_once:
+    build: .
+    command: >
+      bash -c "echo 'Starting run_once' && python manage.py migrate --no-input && echo 'run_once complete'"
+    env_file:
+      - docker-compose.env
+    volumes:
+      - .:/opt/app
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: "no"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    healthcheck:
+      test: ["CMD-SHELL", "rabbitmq-diagnostics ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mysql:
+    image: mysql:8.0.32
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci --init-connect='SET NAMES UTF8;' --innodb-flush-log-at-trx-commit=0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: icat
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "3306:3306"
