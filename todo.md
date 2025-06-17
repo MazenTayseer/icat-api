@@ -5,3 +5,5 @@
 - test sending emails live ✅
 - check max score calculation
 - CONTINUE USER ASSESSMENTS
+- create authenticated view class
+- user groups

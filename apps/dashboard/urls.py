@@ -5,10 +5,13 @@ from apps.dashboard.rest.views.assessment import (
 from apps.dashboard.rest.views.leaderboard import (LeaderboardDetailView,
                                                    LeaderboardView)
 from apps.dashboard.rest.views.module import ModuleDashboardView
+from apps.dashboard.rest.views.user import UserView
 
 # from apps.dashboard.rest.views.user_assessment import AssessmentSubmissionView
 
 urlpatterns = [
+    path('user/', UserView.as_view(), name="get-user"),
+
     path('modules/', ModuleDashboardView.as_view(), name='get-all-modules'),
     path('modules/<str:id>/', ModuleDashboardView.as_view(), name='get-module'),
 
