@@ -33,7 +33,7 @@ class PhishingSimulator:
         recipient_email: str,
         scenario: PhishingScenario
     ):
-        email_body = self.__render_email_body(scenario.seed, first_name)
+        email_body = self.__render_email_body(scenario.seed)
         email_body = self.__format_email_body(email_body, first_name)
         subject = self.__format_email_subject(scenario.subject, first_name)
         self.mailer_client.send_email(

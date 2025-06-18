@@ -15,9 +15,7 @@ def mock_phishing_clients(test_func):
             mock_mailer_class.return_value = mock_mailer_instance
             mock_ollama_class.return_value = mock_ollama_instance
 
-            mock_ollama_instance.chat.return_value = {
-                "message": {"content": "Dear <<NAME>>, test phishing email content"}
-            }
+            mock_ollama_instance.chat.return_value = "Dear <<NAME>>, test phishing email content"
             mock_mailer_instance.send_email.return_value = None
 
             return test_func(
