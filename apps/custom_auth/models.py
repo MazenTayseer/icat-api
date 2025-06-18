@@ -1,8 +1,8 @@
+from custom_auth.enums.experience_levels import ExperienceLevels
+from custom_auth.user_manager import CustomUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from apps.custom_auth.enums.experience_levels import ExperienceLevels
-from apps.custom_auth.user_manager import CustomUserManager
 from common.utils import generate_uuid
 
 

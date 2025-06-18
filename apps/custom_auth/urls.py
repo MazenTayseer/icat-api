@@ -1,7 +1,6 @@
+from custom_auth.rest.views import (LogoutView, RefreshTokenView, SignInView,
+                                    SignUpView, UserView)
 from django.urls import path
-
-from apps.custom_auth.rest.views import (LogoutView, RefreshTokenView,
-                                         SignInView, SignUpView, UserView)
 
 urlpatterns = [
     path('signup/', SignUpView.as_view(), name='signup'),

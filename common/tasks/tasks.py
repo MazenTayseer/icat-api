@@ -10,10 +10,9 @@ from icat import celery_app
 @celery_app.task
 def send_phising_email():
     objects_to_create = []
+    mailer_client = MailerClient()
+    ollama_client = OllamaClient()
     for user in get_user_model().objects.filter(is_superuser=False).iterator():
-        mailer_client = MailerClient()
-        ollama_client = OllamaClient()
-
         phishing_simulator = PhishingSimulator(
             mailer_client=mailer_client,
             ollama_client=ollama_client

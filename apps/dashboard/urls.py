@@ -6,8 +6,7 @@ from apps.dashboard.rest.views.leaderboard import (LeaderboardDetailView,
                                                    LeaderboardView)
 from apps.dashboard.rest.views.module import ModuleDashboardView
 from apps.dashboard.rest.views.user import UserView
-
-# from apps.dashboard.rest.views.user_assessment import AssessmentSubmissionView
+from apps.dashboard.rest.views.user_assessment import AssessmentSubmissionView
 
 urlpatterns = [
     path('user/', UserView.as_view(), name="get-user"),
@@ -21,5 +20,5 @@ urlpatterns = [
     path('leaderboard/', LeaderboardView.as_view(), name='get-leaderboard'),
     path('leaderboard/<str:id>/', LeaderboardDetailView.as_view(), name='get-leaderboard-detail'),
 
-    # path('assessments/<str:assessment_id>/submit/', AssessmentSubmissionView.as_view(), name='submit-assessment'),
+    path('assessments/<str:assessment_id>/submit/', AssessmentSubmissionView.as_view(), name='submit-assessment'),
 ]

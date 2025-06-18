@@ -72,6 +72,7 @@ class UserAssessments(models.Model):
     )
     score = models.FloatField(blank=False, null=False)
     trial = models.PositiveIntegerField(blank=False, null=False)
+    feedback = models.TextField(blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

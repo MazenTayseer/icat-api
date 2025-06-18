@@ -42,7 +42,7 @@ class BaseQuestion(models.Model):
         app_label = 'dal'
 
     def __str__(self):
-        return self.stem
+        return self.text
 
 
 class McqQuestion(BaseQuestion):

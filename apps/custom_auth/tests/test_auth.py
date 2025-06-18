@@ -1,7 +1,6 @@
+from custom_auth.tests.base import CustomAuthBaseTestCase
 from django.contrib.auth import get_user_model
 from rest_framework import status
-
-from apps.custom_auth.tests.base import CustomAuthBaseTestCase
 
 User = get_user_model()
 

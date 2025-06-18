@@ -7,3 +7,4 @@
 - CONTINUE USER ASSESSMENTS
 - create authenticated view class
 - user groups
+- adjust scores with ollama

@@ -1,3 +1,4 @@
+from custom_auth.rest.serializers import SignInSerializer, SignUpSerializer
 from django.conf import settings
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -6,9 +7,6 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
-
-from apps.custom_auth.rest.serializers import (SignInSerializer,
-                                               SignUpSerializer)
 
 
 class SignUpView(APIView):

@@ -1,8 +1,8 @@
-from django.conf import settings
 
 from apps.dal.models import PhishingScenario
+from apps.dal.models.enums.ai_roles import AIRole
 from common.clients.mailer_client import MailerClient
-from common.clients.ollama_client import OllamaClient
+from common.clients.ollama_client import OllamaClient, OllamaMessage
 
 
 class PhishingSimulator:
@@ -11,13 +11,10 @@ class PhishingSimulator:
         self.mailer_client = mailer_client
         self.email_template = "common/emails/phishing.html"
 
-    def __render_email_body(self, seed: str, first_name: str):
-        rsp = self.ollama_client.chat(
-            model=settings.OLLAMA_MODEL,
-            messages=[{"role": "user", "content": seed}],
-            stream=False
+    def __render_email_body(self, seed: str):
+        return self.ollama_client.chat(
+            messages=[OllamaMessage(role=AIRole.USER, content=seed)]
         )
-        return rsp["message"]["content"]
 
     def __format_email_body(self, email_body: str, first_name: str):
         email_body = email_body.replace("<<NAME>>", first_name)
