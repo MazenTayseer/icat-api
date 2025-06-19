@@ -1,7 +1,7 @@
 from django.urls import path
 
 from apps.dashboard.rest.views.assessment import (
-    AssessmentDashboardDetailView, AssessmentDashboardListView, AssessmentByModuleView)
+    AssessmentDashboardDetailView, AssessmentDashboardListView, AssessmentByModuleView, InitialAssessmentView)
 from apps.dashboard.rest.views.leaderboard import (LeaderboardDetailView,
                                                    LeaderboardView)
 from apps.dashboard.rest.views.module import ModuleDashboardView
@@ -14,6 +14,7 @@ urlpatterns = [
     path('modules/', ModuleDashboardView.as_view(), name='get-all-modules'),
     path('modules/<str:id>/', ModuleDashboardView.as_view(), name='get-module'),
 
+    path("assessments/initial/", InitialAssessmentView.as_view(), name="initial-assessment", ),
     path('assessments/', AssessmentDashboardListView.as_view(), name='get-all-assessments'),
     path('assessments/<str:id>/', AssessmentDashboardDetailView.as_view(), name='get-assessment'),
     path('assessments/by-module/<uuid:module_id>/', AssessmentByModuleView.as_view(), name='assessment-by-module'),

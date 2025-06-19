@@ -7,6 +7,8 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from apps.dal.models import Assessment
 from apps.dashboard.rest.serializers.assessment import (
     AssessmentListSerializer, AssessmentSerializer)
+from apps.dal.models.enums.assessment_type import AssessmentType   # ← import
+
 
 
 class AssessmentDashboardListView(APIView):
@@ -49,3 +51,25 @@ class AssessmentByModuleView(APIView):
             return Response({"detail": "No assessments for this module."}, status=status.HTTP_404_NOT_FOUND)
         serializer = AssessmentSerializer(assessments.first())  # Or `.all()` if you expect multiple
         return Response(serializer.data)
+    
+class InitialAssessmentView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes     = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        # grab the first INITIAL assessment (None if table empty)
+        assessment = (
+            Assessment.objects
+            .filter(type=AssessmentType.INITIAL)
+            .order_by("created_at")
+            .first()
+        )
+
+        if assessment is None:
+            return Response(
+                {"detail": "No initial assessment configured."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        data = AssessmentSerializer(assessment).data
+        return Response(data, status=status.HTTP_200_OK)
