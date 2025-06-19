@@ -59,3 +59,24 @@ class SignInSerializer(serializers.Serializer):
 
         attrs['user'] = user
         return attrs
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    current_password = serializers.CharField(required=True)
+    new_password1 = serializers.CharField(
+        required=True,
+        validators=[validate_password]
+    )
+    new_password2 = serializers.CharField(required=True)
+
+    def validate(self, attrs):
+        current_password = attrs.get('current_password')
+        new_password1 = attrs.get('new_password1')
+        new_password2 = attrs.get('new_password2')
+
+        if new_password1 != new_password2:
+            raise serializers.ValidationError(
+                {"new_password": "New password fields didn't match."}
+            )
+
+        return attrs
