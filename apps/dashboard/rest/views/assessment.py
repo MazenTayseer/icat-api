@@ -37,3 +37,15 @@ class AssessmentDashboardDetailView(APIView):
 
         serializer = AssessmentSerializer(assessment)
         return Response(serializer.data)
+    
+    
+class AssessmentByModuleView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, module_id, *args, **kwargs):
+        assessments = Assessment.objects.filter(module_id=module_id)
+        if not assessments.exists():
+            return Response({"detail": "No assessments for this module."}, status=status.HTTP_404_NOT_FOUND)
+        serializer = AssessmentSerializer(assessments.first())  # Or `.all()` if you expect multiple
+        return Response(serializer.data)
