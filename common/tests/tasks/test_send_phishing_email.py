@@ -26,9 +26,9 @@ class SendPhishingEmailTaskTestCase(BaseTestCase):
     def test_send_phising_email_creates_user_scenarios(
         self,
         mock_mailer_instance,
-        mock_ollama_instance
+        mock_gemini_instance
     ):
         send_phising_email()
         self.assertEqual(mock_mailer_instance.send_email.call_count, self.users_count)
-        self.assertEqual(mock_ollama_instance.chat.call_count, self.users_count)
+        self.assertEqual(mock_gemini_instance.chat.call_count, self.users_count)
         self.assertEqual(UserPhishingScenario.objects.count(), self.users_count)

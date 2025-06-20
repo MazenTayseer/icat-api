@@ -7,7 +7,7 @@ from apps.dal.models import Assessment
 from apps.dal.models.assessment import UserAssessments
 from apps.dal.models.enums.ai_roles import AIRole
 from apps.dashboard.rest.serializers.answer import AnswerInputSerializer
-from common.clients.ollama_client import OllamaClient, OllamaMessage
+from common.clients.gemini_client import GeminiClient, GeminiMessage
 from common.prompts import Prompts
 
 
@@ -17,20 +17,27 @@ class SubmissionSerializer(serializers.Serializer):
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=True)
 
     def __build_assessment_payload(self, answers):
-        user_content = Prompts.GRADING_DIRECTIVE + json.dumps(answers, indent=4)
-        user_message = OllamaMessage(role=AIRole.USER, content=user_content)
-        system_message = OllamaMessage(role=AIRole.SYSTEM, content=Prompts.INITIAL_ASSESSMENT)
-        return [system_message, user_message]
+        user_content = json.dumps(answers, indent=4)
+        user_message = GeminiMessage(role=AIRole.USER, content=user_content)
+        system_message = GeminiMessage(role=AIRole.SYSTEM, content=Prompts.INITIAL_ASSESSMENT)
+        return system_message, user_message
 
     def __grade_with_ai(self, answers):
-        ollama_client = OllamaClient()
-        payload = self.__build_assessment_payload(answers)
-        response = ollama_client.chat(payload)
+        gemini_client = GeminiClient()
+        system_message, user_message = self.__build_assessment_payload(answers)
+        response = gemini_client.chat(system_message, user_message)
         return response
 
     def __calculate_score_with_ai(self, answers):
         response = self.__grade_with_ai(answers)
         return response
+
+    def __calculate_mcq_total_score(self, mcq_answers):
+        total_score = 0
+        for mcq in mcq_answers:
+            if mcq.get("user_answer").get("id") == mcq.get("correct_choice").get("id"):
+                total_score += 1
+        return total_score
 
     def __validate_data(self, data):
         assessment = data.get('assessment')
@@ -80,7 +87,6 @@ class SubmissionSerializer(serializers.Serializer):
         for rubric in essay.get('question').rubric.all():
             essay["rubric"].append({
                 "point": rubric.text,
-                "value": rubric.value,
                 "weight": rubric.weight
             })
 
@@ -89,14 +95,17 @@ class SubmissionSerializer(serializers.Serializer):
     def __format_data_for_ai(self, validated_data):
         submitted_mcqs = validated_data.get('answers').get('mcq')
         submitted_essays = validated_data.get('answers').get('essay')
+        max_score = 0
 
         formatted_mcqs = []
         for mcq in submitted_mcqs:
+            max_score += mcq.get('question').max_score
             formatted_mcqs.append(self.__add_all_answers_to_mcq_question(mcq))
             mcq['question'] = self.__format_object_to_id_and_text(mcq.get('question'))
 
         formatted_essays = []
         for essay in submitted_essays:
+            max_score += essay.get('question').max_score
             formatted_essays.append(self.__add_rubric_to_essay_question(essay))
             essay['question'] = self.__format_object_to_id_and_text(essay.get('question'))
 
@@ -104,6 +113,7 @@ class SubmissionSerializer(serializers.Serializer):
             "mcq": formatted_mcqs,
             "essay": formatted_essays
         }
+        validated_data['max_score'] = max_score
         return validated_data
 
     def validate(self, data):
@@ -115,19 +125,26 @@ class SubmissionSerializer(serializers.Serializer):
         answers = validated_data.get('answers')
         assessment = validated_data.get('assessment')
         response = self.__calculate_score_with_ai(answers)
+        essay_user_score = response.get('overall').get('essay_total_score')
+        mcq_user_score = self.__calculate_mcq_total_score(answers.get('mcq'))
+
+        total_user_score = essay_user_score + mcq_user_score
+        max_score = validated_data.get('max_score')
+        feedback = response.get('overall').get('feedback')
 
         user_assessment = UserAssessments.objects.create(
             user=user,
             assessment=assessment,
-            score=response.get('overall').get('score'),
-            feedback=response.get('overall').get('feedback')
+            score=total_user_score,
+            max_score=max_score,
+            feedback=feedback
         )
         return user_assessment
 
 
 
 class UserAssessmentSerializer(serializers.ModelSerializer):
-    score_percentage = serializers.ReadOnlyField()
+    percentage = serializers.ReadOnlyField()
     is_passed = serializers.ReadOnlyField()
 
     class Meta:

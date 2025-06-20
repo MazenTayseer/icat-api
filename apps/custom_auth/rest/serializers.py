@@ -1,7 +1,7 @@
+
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
-import re
 
 User = get_user_model()
 
@@ -70,7 +70,7 @@ class ChangePasswordSerializer(serializers.Serializer):
     new_password2 = serializers.CharField(required=True)
 
     def validate(self, attrs):
-        current_password = attrs.get('current_password')
+        attrs.get('current_password')
         new_password1 = attrs.get('new_password1')
         new_password2 = attrs.get('new_password2')
 
@@ -80,3 +80,15 @@ class ChangePasswordSerializer(serializers.Serializer):
             )
 
         return attrs
+
+
+class UserSerializer(serializers.ModelSerializer):
+    is_admin = serializers.SerializerMethodField()
+
+    def get_is_admin(self, obj):
+        return obj.is_staff or obj.is_superuser
+
+    class Meta:
+        model = User
+        fields = ["id", "first_name", "last_name", "email", "is_admin", "created_at", "updated_at"]
+        read_only_fields = ['id', 'created_at', 'updated_at']

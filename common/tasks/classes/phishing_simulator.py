@@ -1,19 +1,21 @@
 
 from apps.dal.models import PhishingScenario
 from apps.dal.models.enums.ai_roles import AIRole
+from common.clients.gemini_client import GeminiClient, GeminiMessage
 from common.clients.mailer_client import MailerClient
-from common.clients.ollama_client import OllamaClient, OllamaMessage
+from common.prompts import Prompts
 
 
 class PhishingSimulator:
-    def __init__(self, ollama_client: OllamaClient, mailer_client: MailerClient):
-        self.ollama_client = ollama_client
+    def __init__(self, gemini_client: GeminiClient, mailer_client: MailerClient):
+        self.gemini_client = gemini_client
         self.mailer_client = mailer_client
         self.email_template = "common/emails/phishing.html"
 
     def __render_email_body(self, seed: str):
-        return self.ollama_client.chat(
-            messages=[OllamaMessage(role=AIRole.USER, content=seed)]
+        return self.gemini_client.chat(
+            system_message=GeminiMessage(role=AIRole.SYSTEM, content=Prompts.PHISHING_SIMULATOR_PROMPT),
+            user_message=GeminiMessage(role=AIRole.USER, content=seed)
         )
 
     def __format_email_body(self, email_body: str, first_name: str):

@@ -7,8 +7,6 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from apps.dal.models import Assessment
 from apps.dashboard.rest.serializers.assessment import (
     AssessmentListSerializer, AssessmentSerializer)
-from apps.dal.models.enums.assessment_type import AssessmentType   # ← import
-
 
 
 class AssessmentDashboardListView(APIView):
@@ -16,16 +14,18 @@ class AssessmentDashboardListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        module_id = request.query_params.get("module_id", None)
+        module = request.query_params.get("module", None)
+        type = request.query_params.get("type", None)
 
-        if module_id:
-            assessments = Assessment.objects.filter(module_id=module_id)
+        if module:
+            assessments = Assessment.objects.filter(module_id=module)
+        elif type:
+            assessments = Assessment.objects.filter(type__iexact=type)
         else:
             assessments = Assessment.objects.all()
 
         serializer = AssessmentListSerializer(assessments, many=True)
         return Response(serializer.data)
-
 
 class AssessmentDashboardDetailView(APIView):
     authentication_classes = [JWTAuthentication]
@@ -39,37 +39,3 @@ class AssessmentDashboardDetailView(APIView):
 
         serializer = AssessmentSerializer(assessment)
         return Response(serializer.data)
-    
-    
-class AssessmentByModuleView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, module_id, *args, **kwargs):
-        assessments = Assessment.objects.filter(module_id=module_id)
-        if not assessments.exists():
-            return Response({"detail": "No assessments for this module."}, status=status.HTTP_404_NOT_FOUND)
-        serializer = AssessmentSerializer(assessments.first())  # Or `.all()` if you expect multiple
-        return Response(serializer.data)
-    
-class InitialAssessmentView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes     = [IsAuthenticated]
-
-    def get(self, request, *args, **kwargs):
-        # grab the first INITIAL assessment (None if table empty)
-        assessment = (
-            Assessment.objects
-            .filter(type=AssessmentType.INITIAL)
-            .order_by("created_at")
-            .first()
-        )
-
-        if assessment is None:
-            return Response(
-                {"detail": "No initial assessment configured."},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-
-        data = AssessmentSerializer(assessment).data
-        return Response(data, status=status.HTTP_200_OK)

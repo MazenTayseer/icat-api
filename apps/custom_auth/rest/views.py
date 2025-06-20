@@ -1,4 +1,6 @@
-from custom_auth.rest.serializers import SignInSerializer, SignUpSerializer, ChangePasswordSerializer
+from custom_auth.rest.serializers import (ChangePasswordSerializer,
+                                          SignInSerializer, SignUpSerializer,
+                                          UserSerializer)
 from django.conf import settings
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -93,13 +95,9 @@ class UserView(APIView):
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        data = {
-            'id': user.id,
-            'experience_level': user.experience_level,
-            'username': user.username,
-            'email': user.email,
-        }
-        return Response(data, status=status.HTTP_200_OK)
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+
 
 class LogoutView(APIView):
     def post(self, request, *args, **kwargs):
