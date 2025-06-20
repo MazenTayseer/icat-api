@@ -1,4 +1,5 @@
-from custom_auth.rest.serializers import (SignInSerializer, SignUpSerializer,
+from custom_auth.rest.serializers import (ChangePasswordSerializer,
+                                          SignInSerializer, SignUpSerializer,
                                           UserSerializer)
 from django.conf import settings
 from rest_framework import status
@@ -107,3 +108,29 @@ class LogoutView(APIView):
         response.delete_cookie('token')
         response.delete_cookie('refreshToken')
         return response
+
+
+class ChangePasswordView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = ChangePasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            user = request.user
+            current_password = serializer.validated_data['current_password']
+            new_password = serializer.validated_data['new_password1']
+
+            if not user.check_password(current_password):
+                return Response(
+                    {"current_password": "Current password is incorrect."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            user.set_password(new_password)
+            user.save()
+            return Response(
+                {"message": "Password changed successfully!"},
+                status=status.HTTP_200_OK
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

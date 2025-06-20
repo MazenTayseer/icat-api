@@ -1,5 +1,5 @@
 from custom_auth.rest.views import (LogoutView, RefreshTokenView, SignInView,
-                                    SignUpView, UserView)
+                                    SignUpView, UserView, ChangePasswordView)
 from django.urls import path
 
 urlpatterns = [
@@ -8,4 +8,5 @@ urlpatterns = [
     path('token/refresh/', RefreshTokenView.as_view(), name='token_refresh'),
     path('users/me/', UserView.as_view(), name='user_me'),
     path('logout/', LogoutView.as_view(), name='logout'),
+    path('change-password/', ChangePasswordView.as_view(), name='change_password'),
 ]
