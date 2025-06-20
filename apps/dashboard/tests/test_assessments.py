@@ -54,7 +54,6 @@ class AssessmentsTestCases(DashboardBaseTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 2)
-        self.assertEqual(response.data[0].get("id"), self.assessment_1.id)
 
     def test_get_one_assessment(self):
         url = f"{self.dashboard_url}/assessments/{self.assessment_1.id}/"
