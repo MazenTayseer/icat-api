@@ -43,5 +43,4 @@ class EssayAnswerRubric(BaseAnswer):
         on_delete=models.CASCADE,
         related_name='rubric',
     )
-    value = models.PositiveSmallIntegerField(blank=False, null=False)
     weight = models.FloatField(blank=False, null=False)

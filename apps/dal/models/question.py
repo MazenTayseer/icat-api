@@ -67,4 +67,4 @@ class EssayQuestion(BaseQuestion):
 
     @property
     def max_score(self):
-        return sum(rubric.value for rubric in self.rubric.all())
+        return sum(rubric.weight for rubric in self.rubric.all())

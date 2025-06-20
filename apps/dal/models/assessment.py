@@ -28,6 +28,7 @@ class Assessment(models.Model):
         blank=True,
         null=True,
     )
+    max_questions_at_once = models.PositiveIntegerField(default=10)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -49,10 +50,6 @@ class Assessment(models.Model):
     def questions(self):
         return chain(self.mcq_questions.all(), self.essay_questions.all())
 
-    @property
-    def max_score(self):
-        return sum(question.max_score for question in self.questions)
-
 
 class UserAssessments(models.Model):
     id = models.CharField(
@@ -71,6 +68,7 @@ class UserAssessments(models.Model):
         related_name='users',
     )
     score = models.FloatField(blank=False, null=False)
+    max_score = models.FloatField(blank=False, null=False)
     trial = models.PositiveIntegerField(blank=False, null=False)
     feedback = models.TextField(blank=True, null=True)
 
@@ -95,5 +93,5 @@ class UserAssessments(models.Model):
         return self.score_percentage >= 50
 
     @property
-    def score_percentage(self):
-        return (self.score / self.assessment.max_score) * 100
+    def percentage(self):
+        return (self.score / self.max_score) * 100
