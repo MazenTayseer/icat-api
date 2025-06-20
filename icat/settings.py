@@ -193,7 +193,6 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 # Env Variables
 
-BASE_URL = os.environ.get('BASE_URL')
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
 
 ## GEMINI ENV VARIABLES

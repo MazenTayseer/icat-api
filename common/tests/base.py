@@ -1,6 +1,5 @@
 import json
 
-from django.conf import settings
 from django.test import TestCase
 from rest_framework.test import APIClient
 
@@ -19,7 +18,7 @@ class BaseTestCase(TestCase):
 
     def _get_auth_token(self, email, password):
         response = self.client.post(
-            f"{settings.BASE_URL}/api/auth/signin/",
+            "/api/auth/signin/",
             {"email": email, "password": password},
             format="json"
         )
