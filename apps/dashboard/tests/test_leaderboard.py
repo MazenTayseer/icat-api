@@ -25,8 +25,10 @@ class LeaderboardTestCases(DashboardBaseTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data.get("id"), self.leaderboard_1.id)
-        self.assertEqual(response.data.get("name"), self.leaderboard_1.name)
+        self.assertEqual(response.data.get("type"), self.leaderboard_1.type)
         self.assertEqual(len(response.data.get("users")), 2)
         self.assertTrue(
             response.data.get("users")[0].get("total_score") >= response.data.get("users")[1].get("total_score")
         )
+        self.assertIsNotNone(response.data.get("users")[0].get("modules_completed"))
+        self.assertIsNotNone(response.data.get("users")[0].get("position"))

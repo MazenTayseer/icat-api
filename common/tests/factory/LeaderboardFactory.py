@@ -1,6 +1,7 @@
 import factory
 
 from apps.dal.models import Leaderboard, LeaderboardEntry
+from apps.dal.models.enums.leaderboard_type import LeaderboardType
 from common.tests.factory.UserFactory import UserFactory
 
 
@@ -8,7 +9,7 @@ class LeaderboardFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Leaderboard
 
-    name = factory.Faker('name')
+    type = LeaderboardType.GLOBAL
 
 class LeaderboardEntryFactory(factory.django.DjangoModelFactory):
     class Meta:

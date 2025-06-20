@@ -5,6 +5,15 @@ from apps.dal.models.leaderboard import LeaderboardEntry
 
 
 class LeaderboardEntrySerializer(serializers.ModelSerializer):
+    modules_completed = serializers.SerializerMethodField()
+    position = serializers.SerializerMethodField()
+
+    def get_modules_completed(self, obj):
+        return obj.modules_completed
+
+    def get_position(self, obj):
+        return obj.position
+
     class Meta:
         model = LeaderboardEntry
         fields = '__all__'

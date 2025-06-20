@@ -6,6 +6,8 @@ from rest_framework import serializers
 from apps.dal.models import Assessment
 from apps.dal.models.enums.ai_roles import AIRole
 from apps.dal.models.enums.assessment_type import AssessmentType
+from apps.dal.models.enums.leaderboard_type import LeaderboardType
+from apps.dal.models.leaderboard import Leaderboard, LeaderboardEntry
 from apps.dal.models.user_assessment import (EssayAnswerSubmission,
                                              McqAnswerSubmission,
                                              UserAssessments)
@@ -139,6 +141,14 @@ class SubmissionSerializer(serializers.Serializer):
                 return score.get('score', 0), score.get('explanation', "No explanation found")
         return 0, "No explanation found"
 
+    def __update_user_leaderboard_entry(self, user, score):
+        leaderboard_entry, _ = LeaderboardEntry.objects.get_or_create(
+            user=user,
+            leaderboard=Leaderboard.objects.get_or_create(type=LeaderboardType.GLOBAL)[0]
+        )
+        leaderboard_entry.total_score += score
+        leaderboard_entry.save()
+
     def validate(self, data):
         validated_data = self.__validate_data(data)
         return self.__format_data_for_ai(validated_data)
@@ -184,6 +194,8 @@ class SubmissionSerializer(serializers.Serializer):
                 feedback=explanation,
                 score=score
             )
+        if assessment.type == AssessmentType.MODULE:
+            self.__update_user_leaderboard_entry(user, total_user_score)
         return user_assessment
 
 

@@ -1,5 +1,7 @@
 from django.db import models
 
+from apps.dal.models.enums.assessment_type import AssessmentType
+from apps.dal.models.enums.leaderboard_type import LeaderboardType
 from common.utils import generate_uuid
 
 
@@ -9,7 +11,11 @@ class Leaderboard(models.Model):
         max_length=255,
         default=generate_uuid,
     )
-    name = models.CharField(max_length=255)
+    type = models.CharField(
+        max_length=255,
+        choices=LeaderboardType.choices,
+        default=LeaderboardType.GLOBAL
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -18,7 +24,7 @@ class Leaderboard(models.Model):
         app_label = 'dal'
 
     def __str__(self):
-        return self.name
+        return self.type
 
 
 class LeaderboardEntry(models.Model):
@@ -53,7 +59,14 @@ class LeaderboardEntry(models.Model):
     @property
     def position(self):
         return (
-            self.__class__.objects
+            LeaderboardEntry.objects
             .filter(leaderboard=self.leaderboard, total_score__gt=self.total_score)
             .count() + 1
+        )
+
+    @property
+    def modules_completed(self):
+        return sum(
+            1 for ua in self.user.assessments.all()
+            if ua.assessment.type == AssessmentType.MODULE and ua.is_passed
         )
