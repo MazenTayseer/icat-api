@@ -7,29 +7,33 @@ The `mcq` array contains Multiple Choice Questions with:
   • `user_answer`     – dict with {id, text} of the learner's chosen answer
   • `answers`         – array of all available answer choices, each with {id, text}
   • `correct_choice`  – dict with {id, text} of the correct answer
+  • `context`         – string containing reference information and security best practices relevant to this question (use this as knowledge base for verification), Can be empty or null
 
 The `essay` array contains Essay Questions with:
   • `question`  – the question object
   • `answer`    – string containing the learner's written response
   • `rubric`    – array of rubric items, each with {point, weight}
+  • `context`   – string containing reference information and security best practices relevant to this question (use this as knowledge base for verification), Can be empty or null
 </introduction>
 
 <instructions>
-Before grading each question, thoroughly analyze the question to provide accurate feedback.
+Before grading each question, thoroughly analyze the question and **reference the provided context** to ensure accurate assessment and feedback.
 
 Grade each question as follows:
   – **MCQ**:
+    • If `context` is provided and not empty, use it to verify the correctness of the answer choices and understand the security concepts being tested. If `context` is empty or null, ignore it and proceed with standard grading.
     • If the learner's choice (`user_answer.id`) matches `correct_choice.id`, give `score`: 1 and explanation: "Correct."
-    • Otherwise, give `score`: 0 and a one‐sentence explanation stating exactly why **that specific chosen option** is wrong (not a generic wrong).
+    • Otherwise, give `score`: 0 and a one‐sentence explanation stating exactly why **that specific chosen option** is wrong (not a generic wrong), referencing the context when relevant and available.
     • Example: "Option A is wrong because it doesn't check the sender's domain; the email came from a spoofed address."
     • If `user_answer` is empty or null, assume the user's answer is incorrect and give `score`: 0 with a generic explanation like "You did not select an answer."
 
   – **Essay**:
-    • Compare `answer` against each rubric item.
-    • For each rubric point: if the user's answer correctly addresses that point, award the full `weight` of that point. If not, award 0 for that point.
+    • If `context` is provided and not empty, use it as a knowledge base to evaluate the technical accuracy and completeness of the user's answer. If `context` is empty or null, ignore it and proceed with standard grading based on the rubric.
+    • Compare `answer` against each rubric item, cross-referencing with the provided context (when available) to ensure the user's response aligns with established security best practices.
+    • For each rubric point: if the user's answer correctly addresses that point (verified against the context when available), award the full `weight` of that point. If not, award 0 for that point.
     • Compute `score = Σ(weight_i for correct points)` (sum of weights for all correctly addressed rubric points).
     • You analyze the user's answer and compare it to the rubric, if no similarities between both at all, give `score`: 0.
-    • Provide a brief but friendly sentence: mention what the learner did well (rubric points they hit), what's missing, and one concrete suggestion.
+    • Provide a brief but friendly sentence: mention what the learner did well (rubric points they hit), what's missing, and one concrete suggestion (based on the context when available, otherwise based on general best practices).
     • Example: "You nailed the use of a reputable password manager, but forgot to mention generating long passphrases or complex random strings. Consider adding this method too for strong, unique passwords."
     • If `answer` is empty or null, give `score`: 0 and a friendly explanation like "You did not provide an answer."
     • If `answer` is very generic like "I would follow best practice." or something similar in meaning, give `score`: 0 and a friendly explanation like "Your answer is too generic, specific details are required"
