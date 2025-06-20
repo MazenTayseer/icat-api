@@ -4,8 +4,10 @@ from custom_auth.models import User
 from rest_framework import serializers
 
 from apps.dal.models import Assessment
-from apps.dal.models.assessment import UserAssessments
 from apps.dal.models.enums.ai_roles import AIRole
+from apps.dal.models.user_assessment import (EssayAnswerSubmission,
+                                             McqAnswerSubmission,
+                                             UserAssessments)
 from apps.dashboard.rest.serializers.answer import AnswerInputSerializer
 from common.clients.gemini_client import GeminiClient, GeminiMessage
 from common.prompts import Prompts
@@ -64,21 +66,28 @@ class SubmissionSerializer(serializers.Serializer):
 
         return data
 
-    def __format_object_to_id_and_text(self, obj):
+    def __format_answer_for_ai(self, obj):
         return {
             "id": obj.id,
             "text": obj.text
         }
 
+    def __format_question_for_ai(self, obj):
+        return {
+            "id": obj.id,
+            "text": obj.text,
+            "max_score": obj.max_score
+        }
+
     def __add_all_answers_to_mcq_question(self, mcq):
-        mcq["user_answer"] = self.__format_object_to_id_and_text(mcq.get('answer'))
+        mcq["user_answer"] = self.__format_answer_for_ai(mcq.get('answer'))
         mcq.pop('answer')
         mcq["answers"] = []
         for answer in mcq.get('question').answers.all():
             if answer.is_correct:
-                mcq["correct_choice"] = self.__format_object_to_id_and_text(answer)
+                mcq["correct_choice"] = self.__format_answer_for_ai(answer)
             else:
-                mcq["answers"].append(self.__format_object_to_id_and_text(answer))
+                mcq["answers"].append(self.__format_answer_for_ai(answer))
 
         return mcq
 
@@ -101,13 +110,13 @@ class SubmissionSerializer(serializers.Serializer):
         for mcq in submitted_mcqs:
             max_score += mcq.get('question').max_score
             formatted_mcqs.append(self.__add_all_answers_to_mcq_question(mcq))
-            mcq['question'] = self.__format_object_to_id_and_text(mcq.get('question'))
+            mcq['question'] = self.__format_question_for_ai(mcq.get('question'))
 
         formatted_essays = []
         for essay in submitted_essays:
             max_score += essay.get('question').max_score
             formatted_essays.append(self.__add_rubric_to_essay_question(essay))
-            essay['question'] = self.__format_object_to_id_and_text(essay.get('question'))
+            essay['question'] = self.__format_question_for_ai(essay.get('question'))
 
         validated_data['answers'] = {
             "mcq": formatted_mcqs,
@@ -115,6 +124,12 @@ class SubmissionSerializer(serializers.Serializer):
         }
         validated_data['max_score'] = max_score
         return validated_data
+
+    def __find_score_and_explanation_by_id(self, question_id, response):
+        for score in response.get('scores', []):
+            if score.get('id') == question_id:
+                return score.get('score', 0), score.get('explanation', "No explanation found")
+        return 0, "No explanation found"
 
     def validate(self, data):
         validated_data = self.__validate_data(data)
@@ -139,13 +154,54 @@ class SubmissionSerializer(serializers.Serializer):
             max_score=max_score,
             feedback=feedback
         )
+
+        for mcq in answers.get('mcq'):
+            _ , explanation = self.__find_score_and_explanation_by_id(mcq.get('question').get('id'), response)
+            score = 1 if mcq.get("user_answer").get("id") == mcq.get("correct_choice").get("id") else 0
+            McqAnswerSubmission.objects.create(
+                user_assessment=user_assessment,
+                question_id=mcq.get('question').get('id'),
+                answer_id=mcq.get('user_answer').get('id'),
+                max_score=mcq.get('question').get('max_score'),
+                feedback=explanation,
+                score=score
+            )
+        for essay in answers.get('essay'):
+            score, explanation = self.__find_score_and_explanation_by_id(essay.get('question').get('id'), response)
+            EssayAnswerSubmission.objects.create(
+                user_assessment=user_assessment,
+                question_id=essay.get('question').get('id'),
+                answer=essay.get('answer'),
+                max_score=essay.get('question').get('max_score'),
+                feedback=explanation,
+                score=score
+            )
         return user_assessment
 
 
+class McqAnswerSubmissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = McqAnswerSubmission
+        fields = "__all__"
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class EssayAnswerSubmissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EssayAnswerSubmission
+        fields = "__all__"
+        read_only_fields = ['id', 'created_at', 'updated_at']
 
 class UserAssessmentSerializer(serializers.ModelSerializer):
     percentage = serializers.ReadOnlyField()
     is_passed = serializers.ReadOnlyField()
+    answers = serializers.SerializerMethodField()
+
+    def get_answers(self, obj):
+        return {
+            "mcq": McqAnswerSubmissionSerializer(obj.mcq_answers.all(), many=True).data,
+            "essay": EssayAnswerSubmissionSerializer(obj.essay_answers.all(), many=True).data
+        }
 
     class Meta:
         model = UserAssessments

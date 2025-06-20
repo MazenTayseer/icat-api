@@ -90,3 +90,5 @@ class AssessmentsTestCases(DashboardBaseTestCase):
         self.assertIsNotNone(response.data.get("id"))
         self.assertIsNotNone(response.data.get("score"))
         self.assertIsNotNone(response.data.get("percentage"))
+        self.assertEqual(len(response.data.get("answers").get("mcq")), 1)
+        self.assertEqual(len(response.data.get("answers").get("essay")), 2)
