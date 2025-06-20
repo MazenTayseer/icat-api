@@ -6,7 +6,7 @@ class PromptLoader:
     def load_prompt(file_path: str) -> str:
       prompts_dir = "common/prompts"
       file_path = os.path.join(prompts_dir, file_path)
-      with open(file_path, 'r') as file:
+      with open(file_path, 'r', encoding='utf-8') as file:
           return file.read()
 
 class Prompts:

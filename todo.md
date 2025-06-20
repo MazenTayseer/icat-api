@@ -13,3 +13,4 @@
 - adjust scores with gemini ‼️
 - remove user from dashboard ✅
 - add total score divided in leaderboard
+- RAG for modules
