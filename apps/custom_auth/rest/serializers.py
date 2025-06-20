@@ -62,7 +62,12 @@ class SignInSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    is_admin = serializers.SerializerMethodField()
+
+    def get_is_admin(self, obj):
+        return obj.is_staff or obj.is_superuser
+
     class Meta:
         model = User
-        fields = ["id", "first_name", "last_name", "email", "created_at", "updated_at"]
+        fields = ["id", "first_name", "last_name", "email", "is_admin", "created_at", "updated_at"]
         read_only_fields = ['id', 'created_at', 'updated_at']

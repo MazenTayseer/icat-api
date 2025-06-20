@@ -58,6 +58,7 @@ class AuthTestCases(CustomAuthBaseTestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["id"], self.user.id)
+        self.assertIsNotNone(response.data["is_admin"])
 
     def test_logout(self):
         response = self.send_auth_request("post", f"{self.custom_auth_url}/logout/")
