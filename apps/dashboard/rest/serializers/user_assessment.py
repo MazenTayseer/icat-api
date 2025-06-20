@@ -5,6 +5,7 @@ from rest_framework import serializers
 
 from apps.dal.models import Assessment
 from apps.dal.models.enums.ai_roles import AIRole
+from apps.dal.models.enums.assessment_type import AssessmentType
 from apps.dal.models.user_assessment import (EssayAnswerSubmission,
                                              McqAnswerSubmission,
                                              UserAssessments)
@@ -18,20 +19,27 @@ class SubmissionSerializer(serializers.Serializer):
     answers = AnswerInputSerializer(required=True)
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=True)
 
-    def __build_assessment_payload(self, answers):
+    def __get_system_prompt(self, assessment_type):
+        if assessment_type == AssessmentType.INITIAL:
+            return Prompts.INITIAL_ASSESSMENT
+        elif assessment_type == AssessmentType.MODULE:
+            return Prompts.MODULE_ASSESSMENT
+
+    def __build_assessment_payload(self, assessment_type, answers):
+        system_prompt = self.__get_system_prompt(assessment_type)
         user_content = json.dumps(answers, indent=4)
         user_message = GeminiMessage(role=AIRole.USER, content=user_content)
-        system_message = GeminiMessage(role=AIRole.SYSTEM, content=Prompts.INITIAL_ASSESSMENT)
+        system_message = GeminiMessage(role=AIRole.SYSTEM, content=system_prompt)
         return system_message, user_message
 
-    def __grade_with_ai(self, answers):
+    def __grade_with_ai(self, assessment_type, answers):
         gemini_client = GeminiClient()
-        system_message, user_message = self.__build_assessment_payload(answers)
+        system_message, user_message = self.__build_assessment_payload(assessment_type, answers)
         response = gemini_client.chat(system_message, user_message)
         return response
 
-    def __calculate_score_with_ai(self, answers):
-        response = self.__grade_with_ai(answers)
+    def __calculate_score_with_ai(self, assessment_type, answers):
+        response = self.__grade_with_ai(assessment_type, answers)
         return response
 
     def __calculate_mcq_total_score(self, mcq_answers):
@@ -139,7 +147,7 @@ class SubmissionSerializer(serializers.Serializer):
         user = validated_data.get('user')
         answers = validated_data.get('answers')
         assessment = validated_data.get('assessment')
-        response = self.__calculate_score_with_ai(answers)
+        response = self.__calculate_score_with_ai(assessment.type, answers)
         essay_user_score = response.get('overall').get('essay_total_score')
         mcq_user_score = self.__calculate_mcq_total_score(answers.get('mcq'))
 

@@ -11,4 +11,5 @@ class PromptLoader:
 
 class Prompts:
     INITIAL_ASSESSMENT = PromptLoader.load_prompt("initial_assessment.md")
+    MODULE_ASSESSMENT = PromptLoader.load_prompt("module_assessment.md")
     PHISHING_SIMULATOR_PROMPT = PromptLoader.load_prompt("phishing_simulator.md")
