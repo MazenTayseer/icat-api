@@ -28,12 +28,17 @@ def mock_phishing_clients(test_func):
     return wrapper
 
 
-def mock_gemini_for_assessment(test_func):
+def mock_user_asessments_clients(test_func):
     @wraps(test_func)
     def wrapper(self, *args, **kwargs):
-        with patch('apps.dashboard.rest.serializers.user_assessment.GeminiClient') as mock_gemini_class:
+        with (
+            patch('apps.dashboard.rest.serializers.user_assessment.GeminiClient') as mock_gemini_class,
+            patch('apps.dashboard.rest.serializers.user_assessment.ChromaClient') as mock_chroma_class
+        ):
             mock_gemini_instance = Mock()
+            mock_chroma_instance = Mock()
             mock_gemini_class.return_value = mock_gemini_instance
+            mock_chroma_class.return_value = mock_chroma_instance
             mock_gemini_instance.chat.return_value = {
                 'scores': [
                     {'id': '725f9300-0b12-4e21-9689-2348c473d221', 'score': 1.0, 'explanation': 'Correct.'},
@@ -45,5 +50,6 @@ def mock_gemini_for_assessment(test_func):
                     'feedback': "You've got a solid grasp of password security and recognizing phishing risks. To enhance your skills, delve deeper into how attackers manipulate users and strategies for verifying suspicious links. Keep up the great work!"
                 }
             }
-            return test_func(self, mock_gemini_instance, *args, **kwargs)
+            mock_chroma_instance.search_documents.return_value = []
+            return test_func(self, mock_gemini_instance, mock_chroma_instance, *args, **kwargs)
     return wrapper

@@ -91,3 +91,6 @@ db.sqlite3
 
 ### Celery ###
 celerybeat*
+
+### Chroma ###
+chroma_db

@@ -8,10 +8,12 @@ from apps.dal.models.enums.ai_roles import AIRole
 from apps.dal.models.enums.assessment_type import AssessmentType
 from apps.dal.models.enums.leaderboard_type import LeaderboardType
 from apps.dal.models.leaderboard import Leaderboard, LeaderboardEntry
+from apps.dal.models.module import Module
 from apps.dal.models.user_assessment import (EssayAnswerSubmission,
                                              McqAnswerSubmission,
                                              UserAssessments)
 from apps.dashboard.rest.serializers.answer import AnswerInputSerializer
+from common.clients.chroma_client import ChromaClient
 from common.clients.gemini_client import GeminiClient, GeminiMessage
 from common.prompts import Prompts
 
@@ -26,9 +28,29 @@ class SubmissionSerializer(serializers.Serializer):
             return Prompts.INITIAL_ASSESSMENT
         elif assessment_type == AssessmentType.MODULE:
             return Prompts.MODULE_ASSESSMENT
+        return Prompts.FALLBACK_PROMPT
+
+    def __get_context_hits(self, answers):
+        chroma_client = ChromaClient()
+        for answer in answers.get("mcq"):
+            question = answer.get('question').get('text')
+            ctx_hits = chroma_client.search_documents(question)
+            answer["context"] = []
+            for ctx_hit in Module.objects.filter(id__in=ctx_hits):
+                answer["context"].append(ctx_hit.text)
+
+        for answer in answers.get("essay"):
+            question = answer.get('question').get('text')
+            ctx_hits = chroma_client.search_documents(question)
+            answer["context"] = []
+            for ctx_hit in Module.objects.filter(id__in=ctx_hits):
+                answer["context"].append(ctx_hit.text)
+
+        return answers
 
     def __build_assessment_payload(self, assessment_type, answers):
         system_prompt = self.__get_system_prompt(assessment_type)
+        answers = self.__get_context_hits(answers)
         user_content = json.dumps(answers, indent=4)
         user_message = GeminiMessage(role=AIRole.USER, content=user_content)
         system_message = GeminiMessage(role=AIRole.SYSTEM, content=system_prompt)

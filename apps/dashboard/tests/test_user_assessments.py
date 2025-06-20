@@ -1,7 +1,7 @@
 
 from apps.dal.models.enums.assessment_type import AssessmentType
 from apps.dashboard.tests.base import DashboardBaseTestCase
-from common.tests.decorators import mock_gemini_for_assessment
+from common.tests.decorators import mock_user_asessments_clients
 from common.tests.factory import (AssessmentFactory, EssayAnswerRubricFactory,
                                   EssayQuestionFactory, McqAnswerFactory,
                                   McqQuestionFactory, ModuleFactory)
@@ -63,8 +63,8 @@ class AssessmentsTestCases(DashboardBaseTestCase):
 
         super().setUp()
 
-    @mock_gemini_for_assessment
-    def test_submit_assessment_all_true(self, mock_gemini_instance):
+    @mock_user_asessments_clients
+    def test_submit_assessment_all_true(self, mock_gemini_instance, mock_chroma_instance):
         url = f"{self.dashboard_url}/assessments/{self.assessment.id}/submit/"
         data = {
             "answers": {
@@ -86,6 +86,7 @@ class AssessmentsTestCases(DashboardBaseTestCase):
         response = self.send_auth_request("post", url, data=data)
 
         self.assertEqual(mock_gemini_instance.chat.call_count, 1)
+        self.assertEqual(mock_chroma_instance.search_documents.call_count, 3)
         self.assertEqual(response.status_code, 200)
         self.assertIsNotNone(response.data.get("id"))
         self.assertIsNotNone(response.data.get("score"))

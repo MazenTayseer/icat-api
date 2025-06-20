@@ -69,4 +69,6 @@ Guidelines:
 
 Make your voice friendly, modern, and encouraging in the feedback, as if you're a classroom instructor giving personalized tips.
 Only return the JSON object, no extra text or formatting.
+
+You can use data provided below to more accurate answers
 </notes>
