@@ -196,7 +196,7 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 BASE_URL = os.environ.get('BASE_URL')
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
 
-## OLLAMA ENV VARIABLES
+## GEMINI ENV VARIABLES
 
-OLLAMA_HOST  = os.environ.get("OLLAMA_HOST")
-OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
