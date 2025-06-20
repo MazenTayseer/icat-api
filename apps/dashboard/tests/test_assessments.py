@@ -17,6 +17,11 @@ class AssessmentsTestCases(DashboardBaseTestCase):
             module=self.module,
             type=AssessmentType.MODULE
         )
+        self.assessment_3 = AssessmentFactory(
+            name='Assessment 3',
+            type=AssessmentType.INITIAL,
+            module=None
+        )
 
         self.question_1_1 = McqQuestionFactory(assessment=self.assessment_1)
         self.question_1_2 = McqQuestionFactory(assessment=self.assessment_1)
@@ -33,7 +38,23 @@ class AssessmentsTestCases(DashboardBaseTestCase):
         response = self.send_auth_request("get", url)
 
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 3)
+
+    def test_get_all_assessments_by_type(self):
+        url = f"{self.dashboard_url}/assessments/?type=initial"
+        response = self.send_auth_request("get", url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0].get("id"), self.assessment_3.id)
+
+    def test_get_all_assessments_by_module(self):
+        url = f"{self.dashboard_url}/assessments/?module={self.module.id}"
+        response = self.send_auth_request("get", url)
+
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 2)
+        self.assertEqual(response.data[0].get("id"), self.assessment_1.id)
 
     def test_get_one_assessment(self):
         url = f"{self.dashboard_url}/assessments/{self.assessment_1.id}/"
