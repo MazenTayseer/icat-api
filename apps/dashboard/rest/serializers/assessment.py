@@ -1,3 +1,5 @@
+import random
+
 from rest_framework import serializers
 
 from apps.dal.models import Assessment
@@ -10,7 +12,9 @@ class AssessmentSerializer(serializers.ModelSerializer):
     max_retries = serializers.SerializerMethodField()
 
     def get_questions(self, obj):
-        questions_list = list(obj.questions)[:obj.max_questions_at_once]
+        questions_list = list(obj.questions)
+        if len(questions_list) > obj.max_questions_at_once:
+            questions_list = random.sample(questions_list, obj.max_questions_at_once)
         return QuestionSerializer(questions_list, many=True, context=self.context).data
 
     def get_max_retries(self, obj):
