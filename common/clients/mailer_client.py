@@ -11,12 +11,14 @@ class MailerClient:
         email_template: str,
         subject: str,
         message: str,
-        to: str
+        to: str,
+        sender_name: str
     ):
         email_body = render_to_string(email_template, {
             'subject': subject,
             'message': message,
         })
-        email = EmailMessage(subject, email_body, to=[to])
+
+        email = EmailMessage(subject, email_body, from_email=sender_name, to=[to])
         email.content_subtype = "html"
         email.send()

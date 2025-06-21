@@ -15,4 +15,4 @@
 - RAG for modules ✅
 - RAG embeddings using Gemini if bad results
 - max retries for an assessment ✅
-- name of sender (email) (try it also)
+- name of sender (email) ✅
