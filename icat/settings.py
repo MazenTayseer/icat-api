@@ -29,10 +29,10 @@ sys.path.insert(0, project_base('apps'))
 # Extra Settings
 AUTH_USER_MODEL = 'custom_auth.User'
 
-# CSRF
-# Either Update Axios settings or Django Settings
+# CSRF settings
 CSRF_COOKIE_NAME = 'XSRF-TOKEN'
 CSRF_HEADER_NAME = 'HTTP_X_XSRF_TOKEN'
+CSRF_TRUSTED_ORIGINS = ['http://72.146.224.55']
 
 # CORS
 CORS_ALLOW_ALL_ORIGINS = True # Do not run your production server with this setting

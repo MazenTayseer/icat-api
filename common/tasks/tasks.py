@@ -12,7 +12,7 @@ def send_phising_email():
     objects_to_create = []
     mailer_client = MailerClient()
     gemini_client = GeminiClient()
-    for user in get_user_model().objects.filter(is_superuser=False).iterator():
+    for user in get_user_model().objects.filter(is_superuser=False, receive_emails=True).iterator():
         phishing_simulator = PhishingSimulator(
             mailer_client=mailer_client,
             gemini_client=gemini_client
