@@ -45,9 +45,6 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
     'access-control-allow-headers', # this one is important
 ]
 
-CSRF_TRUSTED_ORIGINS = ['*']
-CORS_ORIGIN_WHITELIST = ['*']
-
 # Application definition
 
 INSTALLED_APPS = [
