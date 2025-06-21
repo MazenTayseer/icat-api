@@ -38,8 +38,8 @@ class AssessmentDashboardDetailView(APIView):
             return Response({"detail": "Assessment not found."}, status=status.HTTP_404_NOT_FOUND)
 
         user = request.user
-        user_assessment = UserAssessments.objects.filter(user=user, assessment=assessment).count()
-        if user_assessment >= assessment.max_retries:
+        user_assessment_count = UserAssessments.objects.filter(user=user, assessment=assessment).count()
+        if user_assessment_count >= assessment.max_retries:
             return Response({"detail": "You have reached the maximum number of retries."}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = AssessmentSerializer(assessment)

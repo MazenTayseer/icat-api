@@ -14,4 +14,4 @@
 - add total score divided in leaderboard
 - RAG for modules ✅
 - RAG embeddings using Gemini if bad results
-- max retries for an assessment
+- max retries for an assessment ✅
