@@ -108,7 +108,13 @@ WSGI_APPLICATION = 'icat.wsgi.application'
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
 default_db = dj_database_url.parse(DATABASE_URL)
-default_db["OPTIONS"] = {"sql_mode": "traditional", "charset": "utf8mb4"}
+default_db["OPTIONS"] = {
+    "sql_mode": "traditional",
+    "charset": "utf8mb4",
+    "ssl": {
+        "ssl_disabled": False,
+    }
+}
 default_db["CONN_MAX_AGE"] = 3600
 
 DATABASES = {
