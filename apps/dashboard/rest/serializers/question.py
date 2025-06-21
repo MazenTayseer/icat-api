@@ -20,8 +20,6 @@ class BaseQuestionSerializer(serializers.ModelSerializer):
 
 
 class QuestionSerializer(serializers.Serializer):
-    """Serializer that can handle both MCQ and Essay questions"""
-    
     def to_representation(self, instance):
         if isinstance(instance, McqQuestion):
             return McqQuestionSerializer(instance, context=self.context).data
@@ -64,12 +62,12 @@ class McqQuestionCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = McqQuestion
         fields = ['assessment', 'domain', 'difficulty', 'text']
-        
+
     def validate_text(self, value):
         if not value.strip():
             raise serializers.ValidationError("Question text cannot be empty")
         return value.strip()
-    
+
     def validate_difficulty(self, value):
         if value < 1 or value > 5:
             raise serializers.ValidationError("Difficulty must be between 1 and 5")
@@ -80,12 +78,12 @@ class EssayQuestionCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = EssayQuestion
         fields = ['assessment', 'domain', 'difficulty', 'text']
-        
+
     def validate_text(self, value):
         if not value.strip():
             raise serializers.ValidationError("Question text cannot be empty")
         return value.strip()
-    
+
     def validate_difficulty(self, value):
         if value < 1 or value > 5:
             raise serializers.ValidationError("Difficulty must be between 1 and 5")
@@ -96,12 +94,12 @@ class McqQuestionUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = McqQuestion
         fields = ['assessment', 'domain', 'difficulty', 'text']
-        
+
     def validate_text(self, value):
         if not value.strip():
             raise serializers.ValidationError("Question text cannot be empty")
         return value.strip()
-    
+
     def validate_difficulty(self, value):
         if value < 1 or value > 5:
             raise serializers.ValidationError("Difficulty must be between 1 and 5")
@@ -112,12 +110,12 @@ class EssayQuestionUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = EssayQuestion
         fields = ['assessment', 'domain', 'difficulty', 'text']
-        
+
     def validate_text(self, value):
         if not value.strip():
             raise serializers.ValidationError("Question text cannot be empty")
         return value.strip()
-    
+
     def validate_difficulty(self, value):
         if value < 1 or value > 5:
             raise serializers.ValidationError("Difficulty must be between 1 and 5")
