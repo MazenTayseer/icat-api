@@ -83,6 +83,10 @@ jobs:
             sudo chown -R $USER:$USER /home/icat-api/icat/staticfiles
             chmod -R u+rw /home/icat-api/icat/staticfiles
 
-            sudo mkdir -p /var/log/celery
-            sudo chmod 777 /var/log/celery
-            bash configs/conf.d/deploy-celery.sh
+            sudo systemctl daemon-reexec
+            sudo systemctl daemon-reload
+            sudo systemctl restart gunicorn
+
+            # sudo mkdir -p /var/log/celery
+            # sudo chmod 777 /var/log/celery
+            # bash configs/conf.d/deploy-celery.sh
