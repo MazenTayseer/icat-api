@@ -1,6 +1,7 @@
 import json
 
 from custom_auth.models import User
+from django.db import models
 from rest_framework import serializers
 
 from apps.dal.models import Assessment
@@ -217,7 +218,18 @@ class SubmissionSerializer(serializers.Serializer):
                 feedback=explanation,
                 score=score
             )
-        if assessment.type == AssessmentType.MODULE:
+
+        previous_best_score = UserAssessments.objects.filter(
+            user=user,
+            assessment=assessment
+        ).exclude(
+            id=user_assessment.id
+        ).aggregate(
+            max_user_score=models.Max('score')
+        )['max_user_score']
+
+        # Update leaderboard if this is the first attempt or a new high score
+        if previous_best_score is None or total_user_score > previous_best_score:
             self.__update_user_leaderboard_entry(user, total_user_score)
         return user_assessment
 
