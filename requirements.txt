@@ -8,6 +8,7 @@ djangorestframework-simplejwt==5.4.0
 djangorestframework==3.15.2
 factory_boy==3.3.1
 google-genai==1.21.1
+gunicorn==23.0.0
 ipdb==0.13.13
 kombu==5.3.5
 mysqlclient==2.2.6
