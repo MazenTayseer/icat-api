@@ -24,7 +24,7 @@ class LeaderboardDetailView(APIView):
 
     def get(self, request, type, *args, **kwargs):
         try:
-            leaderboard = Leaderboard.objects.get(type=type)
+            leaderboard = Leaderboard.objects.get(type__iexact=type)
         except Leaderboard.DoesNotExist:
             return Response({"detail": "Leaderboard not found."}, status=status.HTTP_404_NOT_FOUND)
 
