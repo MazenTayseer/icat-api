@@ -16,9 +16,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-s=i^+ytx$d-1d4r6*f05)5+3-i_==zyyy+^@ua%okx!k(y@jk@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '10.0.2.2']
+ALLOWED_HOSTS = ['*']
 
 def project_base(f=''):
     return os.path.join(BASE_DIR, f)
@@ -29,8 +29,8 @@ sys.path.insert(0, project_base('apps'))
 # Extra Settings
 AUTH_USER_MODEL = 'custom_auth.User'
 
- # CSRF
-    # Either Update Axios settings or Django Settings
+# CSRF
+# Either Update Axios settings or Django Settings
 CSRF_COOKIE_NAME = 'XSRF-TOKEN'
 CSRF_HEADER_NAME = 'HTTP_X_XSRF_TOKEN'
 
@@ -45,13 +45,8 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
     'access-control-allow-headers', # this one is important
 ]
 
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:3000',
-    ]
-
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000',
-    ]
+CSRF_TRUSTED_ORIGINS = ['*']
+CORS_ORIGIN_WHITELIST = ['*']
 
 # Application definition
 
