@@ -20,6 +20,6 @@ urlpatterns = [
 
     path('assessments/<str:assessment_id>/submit/', AssessmentSubmissionView.as_view(), name='submit-assessment'),
 
+    path('assessments/<str:assessment_id>/submissions/', UserAssessmentListView.as_view(), name='list-user-submissions'),
     path('submissions/<str:submission_id>/', UserAssessmentDetailView.as_view(), name='get-user-submission'),
-    path('submissions/<str:assessment_id>/', UserAssessmentListView.as_view(), name='list-user-submissions'),
 ]
