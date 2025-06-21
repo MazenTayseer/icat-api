@@ -13,3 +13,4 @@ class UserFactory(factory.django.DjangoModelFactory):
     last_name = factory.Faker('last_name')
     password = factory.PostGenerationMethodCall('set_password', 'Test1234')
     is_superuser = False
+    receive_emails = True
