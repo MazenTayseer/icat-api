@@ -45,6 +45,11 @@ class Assessment(models.Model):
 
         if self.type == AssessmentType.INITIAL:
             self.max_retries = 1
+            existing_initial = Assessment.objects.filter(type=AssessmentType.INITIAL)
+            if self.pk:
+                existing_initial = existing_initial.exclude(pk=self.pk)
+            if existing_initial.exists():
+                raise ValidationError("Only one initial assessment is allowed.")
         super().save(*args, **kwargs)
 
     def __str__(self):
