@@ -50,8 +50,7 @@ class SubmissionSerializer(serializers.Serializer):
 
     def __build_assessment_payload(self, assessment_type, answers):
         system_prompt = self.__get_system_prompt(assessment_type)
-        if assessment_type == AssessmentType.MODULE:
-            answers = self.__get_context_hits(answers)
+        answers = self.__get_context_hits(answers)
         user_content = json.dumps(answers, indent=4)
         user_message = GeminiMessage(role=AIRole.USER, content=user_content)
         system_message = GeminiMessage(role=AIRole.SYSTEM, content=system_prompt)
