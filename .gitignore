@@ -90,7 +90,7 @@ local_settings.py
 db.sqlite3
 
 ### Celery ###
-celerybeat*
+celerybeat-schedule
 
 ### Chroma ###
 chroma_db
