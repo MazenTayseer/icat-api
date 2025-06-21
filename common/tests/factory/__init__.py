@@ -7,6 +7,9 @@ from common.tests.factory.PhishingScenarioFactory import \
 from common.tests.factory.QuestionFactory import (EssayQuestionFactory,
                                                   McqQuestionFactory)
 from common.tests.factory.SimulationFactory import SimulationFactory
+from common.tests.factory.UserAssessmentFactory import (
+    EssayAnswerSubmissionFactory, McqAnswerSubmissionFactory,
+    UserAssessmentFactory)
 from common.tests.factory.UserFactory import UserFactory
 
 __all__ = [
@@ -18,5 +21,8 @@ __all__ = [
     EssayAnswerRubricFactory,
     SimulationFactory,
     PhishingScenarioFactory,
-    UserFactory
+    UserFactory,
+    UserAssessmentFactory,
+    McqAnswerSubmissionFactory,
+    EssayAnswerSubmissionFactory,
 ]
