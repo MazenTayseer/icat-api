@@ -63,4 +63,6 @@ jobs:
 
             python3 manage.py migrate
 
+            sudo mkdir -p /var/log/celery
+            sudo chmod 777 /var/log/celery
             bash configs/conf.d/deploy-celery.sh
