@@ -53,15 +53,15 @@ jobs:
             pip install -r requirements.txt
 
             touch .env
-            echo "export SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
-            echo "export DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
-            echo "export ACCESS_TOKEN_LIFETIME=${{ secrets.ACCESS_TOKEN_LIFETIME }}" >> .env
-            echo "export REFRESH_TOKEN_LIFETIME=${{ secrets.REFRESH_TOKEN_LIFETIME }}" >> .env
-            echo "export EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" >> .env
-            echo "export EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >> .env
-            echo "export CELERY_BROKER_URL=${{ secrets.CELERY_BROKER_URL }}" >> .env
-            echo "export GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
-            echo "export GEMINI_MODEL=${{ secrets.GEMINI_MODEL }}" >> .env
+            echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+            echo "ACCESS_TOKEN_LIFETIME=${{ secrets.ACCESS_TOKEN_LIFETIME }}" >> .env
+            echo "REFRESH_TOKEN_LIFETIME=${{ secrets.REFRESH_TOKEN_LIFETIME }}" >> .env
+            echo "EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" >> .env
+            echo "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >> .env
+            echo "CELERY_BROKER_URL=${{ secrets.CELERY_BROKER_URL }}" >> .env
+            echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
+            echo "GEMINI_MODEL=${{ secrets.GEMINI_MODEL }}" >> .env
 
             echo "export SECRET_KEY='${{ secrets.SECRET_KEY }}'" >> env/bin/activate
             echo "export DATABASE_URL='${{ secrets.DATABASE_URL }}'" >> env/bin/activate
@@ -82,9 +82,6 @@ jobs:
             # Set permissions for static files
             sudo chown -R $USER:$USER /home/icat-api/icat/staticfiles
             chmod -R u+rw /home/icat-api/icat/staticfiles
-
-            # Run server
-            nohup python manage.py runserver 0.0.0.0:8000 > server.log 2>&1 &
 
             sudo mkdir -p /var/log/celery
             sudo chmod 777 /var/log/celery
