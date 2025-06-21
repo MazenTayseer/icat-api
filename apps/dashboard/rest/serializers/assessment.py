@@ -8,6 +8,7 @@ class AssessmentSerializer(serializers.ModelSerializer):
     questions = serializers.SerializerMethodField()
 
     def get_questions(self, obj):
+        # TODO: make max x
         all_questions = list(obj.questions)
         return BaseQuestionSerializer(all_questions, many=True, context=self.context).data
 

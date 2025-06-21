@@ -22,9 +22,9 @@ class LeaderboardDetailView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, id, *args, **kwargs):
+    def get(self, request, type, *args, **kwargs):
         try:
-            leaderboard = Leaderboard.objects.get(id=id)
+            leaderboard = Leaderboard.objects.get(type=type)
         except Leaderboard.DoesNotExist:
             return Response({"detail": "Leaderboard not found."}, status=status.HTTP_404_NOT_FOUND)
 

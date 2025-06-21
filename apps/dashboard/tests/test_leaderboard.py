@@ -20,7 +20,7 @@ class LeaderboardTestCases(DashboardBaseTestCase):
         self.assertEqual(len(response.data), 1)
 
     def test_get_leaderboard_detail(self):
-        url = f"{self.dashboard_url}/leaderboard/{self.leaderboard_1.id}/"
+        url = f"{self.dashboard_url}/leaderboard/{self.leaderboard_1.type}/"
         response = self.send_auth_request("get", url)
 
         self.assertEqual(response.status_code, 200)
