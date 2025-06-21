@@ -48,6 +48,8 @@ class UserAssessments(models.Model):
 
     @property
     def percentage(self):
+        if self.max_score == 0:
+            return 0
         return (self.score / self.max_score) * 100
 
     @property
