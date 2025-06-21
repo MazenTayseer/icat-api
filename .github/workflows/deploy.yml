@@ -53,15 +53,15 @@ jobs:
             pip install -r requirements.txt
 
             touch .env
-            echo "export SECRET_KEY='${{ secrets.SECRET_KEY }}'" >> .env
-            echo "export DATABASE_URL='${{ secrets.DATABASE_URL }}'" >> .env
-            echo "export ACCESS_TOKEN_LIFETIME='${{ secrets.ACCESS_TOKEN_LIFETIME }}'" >> .env
-            echo "export REFRESH_TOKEN_LIFETIME='${{ secrets.REFRESH_TOKEN_LIFETIME }}'" >> .env
-            echo "export EMAIL_HOST_USER='${{ secrets.EMAIL_HOST_USER }}'" >> .env
-            echo "export EMAIL_HOST_PASSWORD='${{ secrets.EMAIL_HOST_PASSWORD }}'" >> .env
-            echo "export CELERY_BROKER_URL='${{ secrets.CELERY_BROKER_URL }}'" >> .env
-            echo "export GEMINI_API_KEY='${{ secrets.GEMINI_API_KEY }}'" >> .env
-            echo "export GEMINI_MODEL='${{ secrets.GEMINI_MODEL }}'" >> .env
+            echo "export SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+            echo "export DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+            echo "export ACCESS_TOKEN_LIFETIME=${{ secrets.ACCESS_TOKEN_LIFETIME }}" >> .env
+            echo "export REFRESH_TOKEN_LIFETIME=${{ secrets.REFRESH_TOKEN_LIFETIME }}" >> .env
+            echo "export EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" >> .env
+            echo "export EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >> .env
+            echo "export CELERY_BROKER_URL=${{ secrets.CELERY_BROKER_URL }}" >> .env
+            echo "export GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
+            echo "export GEMINI_MODEL=${{ secrets.GEMINI_MODEL }}" >> .env
 
             echo "export SECRET_KEY='${{ secrets.SECRET_KEY }}'" >> env/bin/activate
             echo "export DATABASE_URL='${{ secrets.DATABASE_URL }}'" >> env/bin/activate
