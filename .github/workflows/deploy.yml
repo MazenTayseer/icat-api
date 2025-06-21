@@ -52,6 +52,7 @@ jobs:
 
             pip install -r requirements.txt
 
+            touch .env
             echo "export SECRET_KEY='${{ secrets.SECRET_KEY }}'" >> .env
             echo "export DATABASE_URL='${{ secrets.DATABASE_URL }}'" >> .env
             echo "export ACCESS_TOKEN_LIFETIME='${{ secrets.ACCESS_TOKEN_LIFETIME }}'" >> .env
