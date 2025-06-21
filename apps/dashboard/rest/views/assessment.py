@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from apps.dal.models import Assessment
+from apps.dal.models import Assessment, UserAssessments
 from apps.dashboard.rest.serializers.assessment import (
     AssessmentListSerializer, AssessmentSerializer)
 
@@ -36,6 +36,11 @@ class AssessmentDashboardDetailView(APIView):
             assessment = Assessment.objects.get(id=id)
         except Assessment.DoesNotExist:
             return Response({"detail": "Assessment not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        user = request.user
+        user_assessment = UserAssessments.objects.filter(user=user, assessment=assessment).count()
+        if user_assessment >= assessment.max_retries:
+            return Response({"detail": "You have reached the maximum number of retries."}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = AssessmentSerializer(assessment)
         return Response(serializer.data)

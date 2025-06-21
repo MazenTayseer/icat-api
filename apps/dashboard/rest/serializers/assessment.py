@@ -6,11 +6,14 @@ from apps.dashboard.rest.serializers.question import BaseQuestionSerializer
 
 class AssessmentSerializer(serializers.ModelSerializer):
     questions = serializers.SerializerMethodField()
+    max_retries = serializers.SerializerMethodField()
 
     def get_questions(self, obj):
-        # TODO: make max x
-        all_questions = list(obj.questions)
-        return BaseQuestionSerializer(all_questions, many=True, context=self.context).data
+        questions_list = list(obj.questions)[:obj.max_questions_at_once]
+        return BaseQuestionSerializer(questions_list, many=True, context=self.context).data
+
+    def get_max_retries(self, obj):
+        return obj.max_retries
 
     class Meta:
         model = Assessment

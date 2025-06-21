@@ -28,7 +28,8 @@ class Assessment(models.Model):
         blank=True,
         null=True,
     )
-    max_questions_at_once = models.PositiveIntegerField(default=10)
+    max_questions_at_once = models.PositiveIntegerField(default=5)
+    max_retries = models.PositiveIntegerField(default=3)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -41,6 +42,9 @@ class Assessment(models.Model):
             raise ValidationError("Initial assessment cannot have a module")
         if self.type == AssessmentType.MODULE and not self.module:
             raise ValidationError("Module assessment must have a module")
+
+        if self.type == AssessmentType.INITIAL:
+            self.max_retries = 1
         super().save(*args, **kwargs)
 
     def __str__(self):
