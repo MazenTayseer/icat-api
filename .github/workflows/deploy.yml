@@ -80,8 +80,8 @@ jobs:
             python3 manage.py collectstatic --noinput
 
             # Set permissions for static files
-            sudo chown -R www-data:www-data /home/icat-api/icat/staticfiles
-            sudo chmod -R 755 /home/icat-api/icat/staticfiles
+            sudo chown -R $USER:$USER /home/icat-api/icat/staticfiles
+            chmod -R u+rw /home/icat-api/icat/staticfiles
 
             # Run server
             nohup python manage.py runserver 0.0.0.0:8000 > server.log 2>&1 &
