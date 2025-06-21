@@ -67,7 +67,7 @@ class LeaderboardEntry(models.Model):
 
     @property
     def modules_completed(self):
-        return sum(
-            1 for ua in self.user.assessments.all()
+        return len(set(
+            ua.assessment.id for ua in self.user.assessments.all()
             if ua.assessment.type == AssessmentType.MODULE and ua.is_passed
-        )
+        ))

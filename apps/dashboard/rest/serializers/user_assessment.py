@@ -229,7 +229,7 @@ class SubmissionSerializer(serializers.Serializer):
         )['max_user_score']
 
         # Update leaderboard if this is the first attempt or a new high score
-        if previous_best_score is None or total_user_score > previous_best_score:
+        if previous_best_score is None or total_user_score > previous_best_score and assessment.type == AssessmentType.MODULE:
             self.__update_user_leaderboard_entry(user, total_user_score)
         return user_assessment
 
