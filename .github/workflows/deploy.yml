@@ -83,6 +83,9 @@ jobs:
             sudo chown -R www-data:www-data /home/icat-api/icat/staticfiles
             sudo chmod -R 755 /home/icat-api/icat/staticfiles
 
+            # Run server
+            nohup python manage.py runserver 0.0.0.0:8000 > server.log 2>&1 &
+
             # sudo mkdir -p /var/log/celery
             # sudo chmod 777 /var/log/celery
             # bash configs/conf.d/deploy-celery.sh
