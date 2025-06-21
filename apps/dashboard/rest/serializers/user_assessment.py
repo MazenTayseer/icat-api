@@ -170,7 +170,7 @@ class SubmissionSerializer(serializers.Serializer):
             user=user,
             leaderboard=Leaderboard.objects.get_or_create(type=LeaderboardType.GLOBAL)[0]
         )
-        leaderboard_entry.total_score = score
+        leaderboard_entry.total_score += score
         leaderboard_entry.save()
 
     def validate(self, data):
