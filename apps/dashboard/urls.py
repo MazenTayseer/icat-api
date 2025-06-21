@@ -16,7 +16,7 @@ urlpatterns = [
     path('assessments/<str:id>/', AssessmentDashboardDetailView.as_view(), name='get-assessment'),
 
     path('leaderboard/', LeaderboardView.as_view(), name='get-leaderboard'),
-    path('leaderboard/<str:id>/', LeaderboardDetailView.as_view(), name='get-leaderboard-detail'),
+    path('leaderboard/<str:type>/', LeaderboardDetailView.as_view(), name='get-leaderboard-detail'),
 
     path('assessments/<str:assessment_id>/submit/', AssessmentSubmissionView.as_view(), name='submit-assessment'),
 

@@ -14,7 +14,8 @@ class Leaderboard(models.Model):
     type = models.CharField(
         max_length=255,
         choices=LeaderboardType.choices,
-        default=LeaderboardType.GLOBAL
+        default=LeaderboardType.GLOBAL,
+        unique=True,
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
