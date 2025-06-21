@@ -20,7 +20,7 @@ class SignUpSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email', 'first_name', 'last_name', 'password1', 'password2']
+        fields = ['email', 'first_name', 'last_name', 'password1', 'password2', 'receive_emails']
 
     def validate(self, attrs):
         password1 = attrs.get('password1', '')
@@ -89,5 +89,5 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "first_name", "last_name", "email", "is_admin", "created_at", "updated_at"]
+        fields = ["id", "first_name", "last_name", "email", "experience_level", "receive_emails", "is_admin", "created_at", "updated_at"]
         read_only_fields = ['id', 'created_at', 'updated_at']

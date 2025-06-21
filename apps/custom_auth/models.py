@@ -24,6 +24,7 @@ class User(AbstractUser):
         blank=False,
         null=False
     )
+    receive_emails = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

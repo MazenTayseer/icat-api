@@ -16,10 +16,13 @@ class AuthTestCases(CustomAuthBaseTestCase):
             "password2": "KylianMbappe7",
             "first_name": "Mazen",
             "last_name": "Tayseer",
+            "receive_emails": True,
         }
         response = self.send_unauth_request("post", f"{self.custom_auth_url}/signup/", data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["message"], "User registered successfully!")
+        user = User.objects.get(email="newuser@asu.com")
+        self.assertEqual(user.receive_emails, True)
 
     def test_duplicate_email_signup(self):
         data = {
