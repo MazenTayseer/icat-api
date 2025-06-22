@@ -1,4 +1,6 @@
 
+from django.conf import settings
+
 from apps.dal.models import PhishingScenario
 from apps.dal.models.enums.ai_roles import AIRole
 from common.clients.gemini_client import GeminiClient, GeminiMessage
@@ -12,11 +14,16 @@ class PhishingSimulator:
         self.mailer_client = mailer_client
         self.email_template = "common/emails/phishing.html"
 
-    def __render_email_body(self, seed: str):
+    def __render_email_body(self, seed: str, scenario_id: str):
+        seed = self.__update_seed_with_scenario_id(seed, scenario_id)
         return self.gemini_client.chat(
             system_message=GeminiMessage(role=AIRole.SYSTEM, content=Prompts.PHISHING_SIMULATOR_PROMPT),
             user_message=GeminiMessage(role=AIRole.USER, content=seed)
         )
+
+    def __update_seed_with_scenario_id(self, seed: str, scenario_id: str):
+        text = f"Make the button clickable using an a tag, and make the href={settings.FRONTEND_URL}/simulator/{scenario_id}"
+        return seed + text
 
     def __format_email_body(self, email_body: str, first_name: str):
         email_body = email_body.replace("<<NAME>>", first_name)
@@ -29,8 +36,8 @@ class PhishingSimulator:
     def pick_scenario(self):
         return PhishingScenario.objects.order_by('?').first()
 
-    def get_email_body_and_subject(self, scenario: PhishingScenario, first_name: str):
-        email_body = self.__render_email_body(scenario.seed)
+    def get_email_body_and_subject(self, scenario: PhishingScenario, first_name: str, user_scenario_id: str):
+        email_body = self.__render_email_body(scenario.seed, user_scenario_id)
         email_body = self.__format_email_body(email_body, first_name)
         subject = self.__format_email_subject(scenario.subject, first_name)
         return email_body, subject

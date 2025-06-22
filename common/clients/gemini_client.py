@@ -4,7 +4,6 @@ from dataclasses import dataclass
 
 from django.conf import settings
 from google import genai
-from google.genai.types import GenerateContentConfig
 
 from apps.dal.models.enums.ai_roles import AIRole
 
@@ -36,13 +35,13 @@ class GeminiClient:
         return m.group(1) if m else text
 
     def chat(self, system_message: GeminiMessage | None, user_message: GeminiMessage):
-        config = GenerateContentConfig(
-            system_instruction=[system_message.content]
-        ) if system_message else None
+        contents = [user_message.to_dict()]
+        if system_message:
+            contents.insert(0, system_message.to_dict())
+
         response = self.client.models.generate_content(
             model=settings.GEMINI_MODEL,
-            contents=user_message.to_dict(),
-            config=config
+            contents=contents
         )
         content = response.text
 

@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'dal',
     'custom_auth',
     'dashboard',
+    'simulator'
 ]
 
 MIDDLEWARE = [
@@ -199,3 +200,4 @@ CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+FRONTEND_URL = os.environ.get("FRONTEND_URL")

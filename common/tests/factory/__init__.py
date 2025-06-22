@@ -11,6 +11,8 @@ from common.tests.factory.UserAssessmentFactory import (
     EssayAnswerSubmissionFactory, McqAnswerSubmissionFactory,
     UserAssessmentFactory)
 from common.tests.factory.UserFactory import UserFactory
+from common.tests.factory.UserPhishingScenarioFactory import \
+    UserPhishingScenarioFactory
 
 __all__ = [
     ModuleFactory,
@@ -21,6 +23,7 @@ __all__ = [
     EssayAnswerRubricFactory,
     SimulationFactory,
     PhishingScenarioFactory,
+    UserPhishingScenarioFactory,
     UserFactory,
     UserAssessmentFactory,
     McqAnswerSubmissionFactory,

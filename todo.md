@@ -17,4 +17,9 @@
 - max retries for an assessment ✅
 - name of sender (email) ✅
 - random questions for assessments ✅
-- add permissions for super user only
+- add permissions for super user only ✅
+- check modules
+- emails work real ✅
+- check submissions
+- refresh token
+- update status of phishing to success (not important rn)
