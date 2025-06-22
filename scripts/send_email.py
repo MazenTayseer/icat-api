@@ -1,13 +1,17 @@
+from setup import django_setup
+
+django_setup()
+
 from django.contrib.auth import get_user_model
 
-from apps.dal.models.simulations.phishing_scenario import UserPhishingScenario
+from apps.dal.models.simulations.phishing_scenario import (
+    PhishingScenario, UserPhishingScenario)
+from apps.dal.models.simulations.simulation import Simulation
 from common.clients.gemini_client import GeminiClient
 from common.clients.mailer_client import MailerClient
 from common.tasks.classes.phishing_simulator import PhishingSimulator
-from icat import celery_app
 
 
-@celery_app.task
 def send_phising_email():
     objects_to_create = []
     mailer_client = MailerClient()
@@ -38,3 +42,24 @@ def send_phising_email():
             pass
 
     UserPhishingScenario.objects.bulk_create(objects_to_create)
+
+
+if __name__ == "__main__":
+    simulation = Simulation.objects.create(
+        name="Phishing"
+    )
+    PhishingScenario.objects.create(
+        simulation=simulation,
+        tag="VPN Reset",
+        subject="URGENT: VPN password reset required",
+        seed="""
+        Write a professional phishing email that appears to come from the company
+        IT help desk. Goal: make the user click a “Reset VPN Password” button
+        today. Tone: polite urgency, reference security audit, use first name
+        placeholder <<NAME>> in greeting. Return ONLY the raw HTML for the email
+        body (120–160 words) with a single <b>Reset Now</b> button—no markdown or
+        explanations.
+        Return ONLY the HTML tags for the email body, with no explanation or markdown fence.
+        """,
+    )
+    send_phising_email()

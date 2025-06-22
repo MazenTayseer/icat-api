@@ -11,6 +11,7 @@ if __name__ == "__main__":
         first_name="Mazen",
         last_name="Tayseer",
         password="Test1234",
+        receive_emails=True,
     )
 
     print("Database populated successfully")

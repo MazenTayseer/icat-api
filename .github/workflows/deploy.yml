@@ -62,6 +62,7 @@ jobs:
             echo "CELERY_BROKER_URL=${{ secrets.CELERY_BROKER_URL }}" >> .env
             echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
             echo "GEMINI_MODEL=${{ secrets.GEMINI_MODEL }}" >> .env
+            echo "FRONTEND_URL=${{ secrets.FRONTEND_URL }}" >> .env
 
             echo "export SECRET_KEY='${{ secrets.SECRET_KEY }}'" >> env/bin/activate
             echo "export DATABASE_URL='${{ secrets.DATABASE_URL }}'" >> env/bin/activate
@@ -72,6 +73,7 @@ jobs:
             echo "export CELERY_BROKER_URL='${{ secrets.CELERY_BROKER_URL }}'" >> env/bin/activate
             echo "export GEMINI_API_KEY='${{ secrets.GEMINI_API_KEY }}'" >> env/bin/activate
             echo "export GEMINI_MODEL='${{ secrets.GEMINI_MODEL }}'" >> env/bin/activate
+            echo "export FRONTEND_URL='${{ secrets.FRONTEND_URL }}'" >> env/bin/activate
 
             deactivate
             source env/bin/activate
