@@ -1,7 +1,6 @@
 from custom_auth.rest.serializers import (ChangePasswordSerializer,
                                           SignInSerializer, SignUpSerializer,
                                           UserSerializer)
-from django.conf import settings
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -49,7 +48,7 @@ class SignInView(APIView):
 
 class RefreshTokenView(APIView):
     def post(self, request, *args, **kwargs):
-        refresh_token = request.COOKIES.get('refreshToken')
+        refresh_token = request.data.get('refresh_token')
         if not refresh_token:
             return Response(
                 {"error": "Refresh token not provided."},
@@ -60,19 +59,10 @@ class RefreshTokenView(APIView):
             refresh = RefreshToken(refresh_token)
             access_token = str(refresh.access_token)
 
-            response = Response({
+            return Response({
                 'message': 'Token refreshed successfully',
+                'access': access_token,
             }, status=status.HTTP_200_OK)
-
-            response.set_cookie(
-                key='token',
-                value=access_token,
-                httponly=True,
-                secure=False,  # Allow HTTP for mixed protocol setup
-                samesite='None',  # Required for cross-site cookies
-                max_age=settings.ACCESS_TOKEN_LIFETIME,
-            )
-            return response
         except TokenError as e:
             raise InvalidToken(e.args[0])
 
@@ -85,17 +75,6 @@ class UserView(APIView):
         user = request.user
         serializer = UserSerializer(user)
         return Response(serializer.data)
-
-
-class LogoutView(APIView):
-    def post(self, request, *args, **kwargs):
-        response = Response(
-            {"message": "Logout successful."},
-            status=status.HTTP_200_OK
-        )
-        response.delete_cookie('token')
-        response.delete_cookie('refreshToken')
-        return response
 
 
 class ChangePasswordView(APIView):

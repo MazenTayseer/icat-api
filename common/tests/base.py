@@ -22,7 +22,7 @@ class BaseTestCase(TestCase):
             {"email": email, "password": password},
             format="json"
         )
-        return response.data.get("access"), response.cookies.get("refreshToken")
+        return response.data.get("access"), response.data.get("refresh")
 
     def send_auth_request(self, method, url, data=None, **kwargs):
         """

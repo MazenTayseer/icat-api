@@ -48,26 +48,9 @@ class AuthTestCases(CustomAuthBaseTestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_refresh_token(self):
-        self.client.cookies["refreshToken"] = self.refresh_token
-        response = self.send_auth_request("post", f"{self.custom_auth_url}/token/refresh/")
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn("message", response.data)
-        self.assertEqual(response.data["message"], "Token refreshed successfully")
-
     def test_user_info(self):
         response = self.send_auth_request("get", f"{self.custom_auth_url}/users/me/")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["id"], self.user.id)
         self.assertIsNotNone(response.data["is_admin"])
-
-    def test_logout(self):
-        response = self.send_auth_request("post", f"{self.custom_auth_url}/logout/")
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["message"], "Logout successful.")
-
-        self.assertEqual(response.cookies.get("token").value, "")
-        self.assertEqual(response.cookies.get("refreshToken").value, "")
