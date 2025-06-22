@@ -47,13 +47,17 @@ class SignInView(APIView):
             response.set_cookie(
                 key='refreshToken',
                 value=refresh_token,
-                samesite='Lax',
+                httponly=True,  # Prevent XSS
+                secure=False,  # Allow HTTP for mixed protocol setup
+                samesite='None',  # Required for cross-site cookies
                 max_age=settings.REFRESH_TOKEN_LIFETIME,
             )
             response.set_cookie(
                 key='token',
                 value=access_token,
-                samesite='Lax',
+                httponly=True,  # Prevent XSS
+                secure=False,  # Allow HTTP for mixed protocol setup
+                samesite='None',  # Required for cross-site cookies
                 max_age=settings.ACCESS_TOKEN_LIFETIME,
             )
             return response
@@ -81,7 +85,8 @@ class RefreshTokenView(APIView):
                 key='token',
                 value=access_token,
                 httponly=True,
-                samesite='Lax',
+                secure=False,  # Allow HTTP for mixed protocol setup
+                samesite='None',  # Required for cross-site cookies
                 max_age=settings.ACCESS_TOKEN_LIFETIME,
             )
             return response
