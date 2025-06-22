@@ -1,17 +1,18 @@
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from apps.dal.models import Assessment, UserAssessments
 from apps.dashboard.rest.serializers.assessment import (
-    AssessmentListSerializer, AssessmentSerializer, AssessmentCreateSerializer, AssessmentUpdateSerializer)
+    AssessmentCreateSerializer, AssessmentListSerializer, AssessmentSerializer,
+    AssessmentUpdateSerializer)
+from common.permissions import IsSuperUserOrReadOnly
 
 
 class AssessmentDashboardListView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSuperUserOrReadOnly]
 
     def get(self, request, *args, **kwargs):
         module = request.query_params.get("module", None)
@@ -38,7 +39,7 @@ class AssessmentDashboardListView(APIView):
 
 class AssessmentDashboardDetailView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSuperUserOrReadOnly]
 
     def get(self, request, id, *args, **kwargs):
         try:

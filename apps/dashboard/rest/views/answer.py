@@ -1,20 +1,19 @@
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from apps.dal.models import McqAnswer, EssayAnswerRubric
+from apps.dal.models import EssayAnswerRubric, McqAnswer
 from apps.dashboard.rest.serializers.answer import (
-    McqAnswerSerializer, EssayAnswerRubricSerializer,
-    McqAnswerCreateSerializer, EssayAnswerRubricCreateSerializer,
-    McqAnswerUpdateSerializer, EssayAnswerRubricUpdateSerializer
-)
+    EssayAnswerRubricCreateSerializer, EssayAnswerRubricSerializer,
+    EssayAnswerRubricUpdateSerializer, McqAnswerCreateSerializer,
+    McqAnswerSerializer, McqAnswerUpdateSerializer)
+from common.permissions import IsSuperUserOrReadOnly
 
 
 class McqAnswerView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSuperUserOrReadOnly]
 
     def get(self, request, id=None, *args, **kwargs):
         if id:
@@ -75,7 +74,7 @@ class McqAnswerView(APIView):
 
 class EssayAnswerRubricView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSuperUserOrReadOnly]
 
     def get(self, request, id=None, *args, **kwargs):
         if id:
@@ -131,4 +130,4 @@ class EssayAnswerRubricView(APIView):
             return Response({"detail": "Essay Answer Rubric not found."}, status=status.HTTP_404_NOT_FOUND)
 
         rubric.delete()
-        return Response({"detail": "Essay Answer Rubric deleted successfully."}, status=status.HTTP_204_NO_CONTENT) 
+        return Response({"detail": "Essay Answer Rubric deleted successfully."}, status=status.HTTP_204_NO_CONTENT)

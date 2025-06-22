@@ -1,20 +1,19 @@
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from apps.dal.models import McqQuestion, EssayQuestion
+from apps.dal.models import EssayQuestion, McqQuestion
 from apps.dashboard.rest.serializers.question import (
-    McqQuestionSerializer, EssayQuestionSerializer,
-    McqQuestionCreateSerializer, EssayQuestionCreateSerializer,
-    McqQuestionUpdateSerializer, EssayQuestionUpdateSerializer
-)
+    EssayQuestionCreateSerializer, EssayQuestionSerializer,
+    EssayQuestionUpdateSerializer, McqQuestionCreateSerializer,
+    McqQuestionSerializer, McqQuestionUpdateSerializer)
+from common.permissions import IsSuperUserOrReadOnly
 
 
 class McqQuestionView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSuperUserOrReadOnly]
 
     def get(self, request, id=None, *args, **kwargs):
         if id:
@@ -75,7 +74,7 @@ class McqQuestionView(APIView):
 
 class EssayQuestionView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSuperUserOrReadOnly]
 
     def get(self, request, id=None, *args, **kwargs):
         if id:
@@ -131,4 +130,4 @@ class EssayQuestionView(APIView):
             return Response({"detail": "Essay Question not found."}, status=status.HTTP_404_NOT_FOUND)
 
         question.delete()
-        return Response({"detail": "Essay Question deleted successfully."}, status=status.HTTP_204_NO_CONTENT) 
+        return Response({"detail": "Essay Question deleted successfully."}, status=status.HTTP_204_NO_CONTENT)

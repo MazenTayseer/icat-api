@@ -1,16 +1,18 @@
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from apps.dal.models import Module
-from apps.dashboard.rest.serializers.module import ModuleDashboardSerializer, ModuleCreateSerializer, ModuleUpdateSerializer
+from apps.dashboard.rest.serializers.module import (ModuleCreateSerializer,
+                                                    ModuleDashboardSerializer,
+                                                    ModuleUpdateSerializer)
+from common.permissions import IsSuperUserOrReadOnly
 
 
 class ModuleDashboardView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSuperUserOrReadOnly]
 
     def get(self, request, id=None, *args, **kwargs):
         if id:
