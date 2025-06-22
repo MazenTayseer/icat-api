@@ -48,7 +48,7 @@ class SignInView(APIView):
 
 class RefreshTokenView(APIView):
     def post(self, request, *args, **kwargs):
-        refresh_token = request.data.get('refresh_token')
+        refresh_token = request.data.get('refresh')
         if not refresh_token:
             return Response(
                 {"error": "Refresh token not provided."},
