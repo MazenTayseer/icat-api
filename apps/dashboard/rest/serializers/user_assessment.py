@@ -75,31 +75,6 @@ class SubmissionSerializer(serializers.Serializer):
                 total_score += 1
         return total_score
 
-    def __validate_data(self, data):
-        assessment = data.get('assessment')
-        submitted_mcqs = data.get('answers').get('mcq', [])
-        submitted_essays = data.get('answers').get('essay', [])
-
-        submitted_mcq_question_ids = {answer.get('question').id for answer in submitted_mcqs}
-        submitted_essay_question_ids = {answer.get('question').id for answer in submitted_essays}
-
-        actual_mcq_question_ids = set(assessment.mcq_questions.values_list('id', flat=True))
-        actual_essay_question_ids = set(assessment.essay_questions.values_list('id', flat=True))
-
-        if submitted_mcq_question_ids != actual_mcq_question_ids:
-            raise serializers.ValidationError({"error": "Invalid Submission."})
-
-        if submitted_essay_question_ids != actual_essay_question_ids:
-            raise serializers.ValidationError({"error": "Invalid Submission."})
-
-        for mcq in submitted_mcqs:
-            question = mcq.get('question')
-            answer = mcq.get('answer')
-            if answer.question != question:
-                raise serializers.ValidationError({"error": "Invalid Submission."})
-
-        return data
-
     def __format_answer_for_ai(self, obj):
         return {
             "id": obj.id,
@@ -174,8 +149,7 @@ class SubmissionSerializer(serializers.Serializer):
         leaderboard_entry.save()
 
     def validate(self, data):
-        validated_data = self.__validate_data(data)
-        return self.__format_data_for_ai(validated_data)
+        return self.__format_data_for_ai(data)
 
     def create(self, validated_data):
         user = validated_data.get('user')
