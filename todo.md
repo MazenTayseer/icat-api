@@ -20,6 +20,6 @@
 - add permissions for super user only ✅
 - check modules
 - emails work real ✅
-- check submissions
-- refresh token
+- check submissions ✅
+- refresh token ✅ (t2reeban)
 - update status of phishing to success (not important rn)

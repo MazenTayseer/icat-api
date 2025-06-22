@@ -62,6 +62,7 @@ class RefreshTokenView(APIView):
             return Response({
                 'message': 'Token refreshed successfully',
                 'access': access_token,
+                'refresh': refresh_token,
             }, status=status.HTTP_200_OK)
         except TokenError as e:
             raise InvalidToken(e.args[0])
