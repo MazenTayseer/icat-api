@@ -31,7 +31,7 @@ def send_phising_email():
                 UserPhishingScenario(
                     user=user,
                     phishing_scenario=scenario,
-                    email_text=email_body,
+                    email_body=email_body,
                     subject=subject
                 )
             )
