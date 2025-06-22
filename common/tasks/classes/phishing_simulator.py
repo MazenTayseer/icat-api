@@ -29,15 +29,19 @@ class PhishingSimulator:
     def pick_scenario(self):
         return PhishingScenario.objects.order_by('?').first()
 
-    def run(
-        self,
-        first_name: str,
-        recipient_email: str,
-        scenario: PhishingScenario
-    ):
+    def get_email_body_and_subject(self, scenario: PhishingScenario, first_name: str):
         email_body = self.__render_email_body(scenario.seed)
         email_body = self.__format_email_body(email_body, first_name)
         subject = self.__format_email_subject(scenario.subject, first_name)
+        return email_body, subject
+
+    def run(
+        self,
+        recipient_email: str,
+        email_body: str,
+        subject: str,
+        scenario: PhishingScenario
+    ):
         self.mailer_client.send_email(
             email_template=self.email_template,
             subject=subject,

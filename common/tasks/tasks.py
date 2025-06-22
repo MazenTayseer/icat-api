@@ -13,22 +13,30 @@ def send_phising_email():
     mailer_client = MailerClient()
     gemini_client = GeminiClient()
     for user in get_user_model().objects.filter(is_superuser=False, receive_emails=True).iterator():
-        phishing_simulator = PhishingSimulator(
-            mailer_client=mailer_client,
-            gemini_client=gemini_client
-        )
-        scenario = phishing_simulator.pick_scenario()
-        phishing_simulator.run(
-            first_name=user.first_name,
-            recipient_email=user.email,
-            scenario=scenario
-        )
-
-        objects_to_create.append(
-            UserPhishingScenario(
-                user=user,
-                phishing_scenario=scenario
+        try:
+            phishing_simulator = PhishingSimulator(
+                mailer_client=mailer_client,
+                gemini_client=gemini_client
             )
-        )
+            scenario = phishing_simulator.pick_scenario()
+            email_body, subject = phishing_simulator.get_email_body_and_subject(scenario, user.first_name)
+            phishing_simulator.run(
+                email_body=email_body,
+                subject=subject,
+                recipient_email=user.email,
+                scenario=scenario
+            )
+
+            objects_to_create.append(
+                UserPhishingScenario(
+                    user=user,
+                    phishing_scenario=scenario,
+                    email_text=email_body,
+                    subject=subject
+                )
+            )
+        except Exception:
+            # If the email fails, we don't want to block the whole task
+            pass
 
     UserPhishingScenario.objects.bulk_create(objects_to_create)

@@ -52,6 +52,8 @@ class UserPhishingScenario(models.Model):
         blank=False,
         null=False
     )
+    email_text = models.TextField()
+    subject = models.CharField()
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
