@@ -3,6 +3,8 @@ from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
+from apps.dal.models.enums.leaderboard_type import LeaderboardType
+
 User = get_user_model()
 
 
@@ -83,11 +85,48 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 class UserSerializer(serializers.ModelSerializer):
     is_admin = serializers.SerializerMethodField()
+    modules_completed = serializers.SerializerMethodField()
+    total_score = serializers.SerializerMethodField()
+    position = serializers.SerializerMethodField()
+
+    def get_modules_completed(self, obj):
+        try:
+            leaderboard_entry = obj.leaderboard_entry.filter(leaderboard__type=LeaderboardType.GLOBAL).first()
+            return leaderboard_entry.modules_completed if leaderboard_entry else 0
+        except Exception:
+            return 0
+
+    def get_total_score(self, obj):
+        try:
+            leaderboard_entry = obj.leaderboard_entry.filter(leaderboard__type=LeaderboardType.GLOBAL).first()
+            return leaderboard_entry.total_score if leaderboard_entry else 0
+        except Exception:
+            return 0
+
+    def get_position(self, obj):
+        try:
+            leaderboard_entry = obj.leaderboard_entry.filter(leaderboard__type=LeaderboardType.GLOBAL).first()
+            return leaderboard_entry.position if leaderboard_entry else None
+        except Exception:
+            return None
 
     def get_is_admin(self, obj):
         return obj.is_staff or obj.is_superuser
 
     class Meta:
         model = User
-        fields = ["id", "first_name", "last_name", "email", "experience_level", "receive_emails", "is_admin", "created_at", "updated_at"]
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "email",
+            "experience_level",
+            "receive_emails",
+            "is_admin",
+            "created_at",
+            "updated_at",
+            "modules_completed",
+            "total_score",
+            "position"
+        ]
         read_only_fields = ['id', 'created_at', 'updated_at']
