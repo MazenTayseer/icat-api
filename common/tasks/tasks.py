@@ -4,6 +4,7 @@ from apps.dal.models.simulations.phishing_scenario import UserPhishingScenario
 from common.clients.gemini_client import GeminiClient
 from common.clients.mailer_client import MailerClient
 from common.tasks.classes.phishing_simulator import PhishingSimulator
+from common.tasks.helpers import TasksHelpers
 from icat import celery_app
 
 
@@ -30,11 +31,13 @@ def send_phising_email():
                 recipient_email=user.email,
                 scenario=scenario
             )
-
+            user_scenario.email_body = email_body
+            user_scenario.subject = subject
             objects_to_create.append(user_scenario)
 
         except Exception:
             # If the email fails, we don't want to block the whole task
             pass
 
+    TasksHelpers.update_status_of_previous_user_scenarios()
     UserPhishingScenario.objects.bulk_create(objects_to_create)
