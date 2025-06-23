@@ -45,6 +45,14 @@ def send_phising_email():
 
 
 if __name__ == "__main__":
+    get_user_model().objects.all().delete()
+    get_user_model().objects.create_user(
+        email="mazen_tayseer@icloud.com",
+        first_name="Mazen",
+        last_name="Tayseer",
+        password="Test1234",
+        receive_emails=True,
+    )
     simulation = Simulation.objects.create(
         name="Phishing"
     )

@@ -94,3 +94,7 @@ celerybeat-schedule
 
 ### Chroma ###
 chroma_db
+
+
+### db dump ###
+db.json
