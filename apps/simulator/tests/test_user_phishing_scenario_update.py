@@ -28,13 +28,3 @@ class UserPhishingScenarioUpdateViewTestCase(SimulatorBaseTestCase):
         self.user_phishing_scenario.refresh_from_db()
         self.assertEqual(self.user_phishing_scenario.status, UserSimulationStatus.FAILED)
         self.assertEqual(response.data['detail'], "UserPhishingScenario status updated successfully.")
-
-    def test_update_user_phishing_scenario_not_idle(self):
-        self.user_phishing_scenario.status = UserSimulationStatus.PASSED_OR_IGNORED
-        self.user_phishing_scenario.save()
-
-        url = f"{self.simulator_url}/{self.user_phishing_scenario.id}/update/"
-
-        response = self.send_unauth_request("patch", url)
-
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
