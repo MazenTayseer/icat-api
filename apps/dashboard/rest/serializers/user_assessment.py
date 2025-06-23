@@ -13,7 +13,10 @@ from apps.dal.models.module import Module
 from apps.dal.models.user_assessment import (EssayAnswerSubmission,
                                              McqAnswerSubmission,
                                              UserAssessments)
-from apps.dashboard.rest.serializers.answer import AnswerInputSerializer
+from apps.dashboard.rest.serializers.answer import (AnswerInputSerializer,
+                                                    McqAnswerSerializer)
+from apps.dashboard.rest.serializers.question import (EssayQuestionSerializer,
+                                                      McqQuestionSerializer)
 from common.clients.chroma_client import ChromaClient
 from common.clients.gemini_client import GeminiClient, GeminiMessage
 from common.prompts import Prompts
@@ -210,6 +213,15 @@ class SubmissionSerializer(serializers.Serializer):
 
 
 class McqAnswerSubmissionSerializer(serializers.ModelSerializer):
+    question = serializers.SerializerMethodField()
+    answer = serializers.SerializerMethodField()
+
+    def get_question(self, obj):
+        return McqQuestionSerializer(obj.question).data
+
+    def get_answer(self, obj):
+        return McqAnswerSerializer(obj.answer).data
+
     class Meta:
         model = McqAnswerSubmission
         fields = "__all__"
@@ -217,6 +229,11 @@ class McqAnswerSubmissionSerializer(serializers.ModelSerializer):
 
 
 class EssayAnswerSubmissionSerializer(serializers.ModelSerializer):
+    question = serializers.SerializerMethodField()
+
+    def get_question(self, obj):
+        return EssayQuestionSerializer(obj.question).data
+
     class Meta:
         model = EssayAnswerSubmission
         fields = "__all__"
