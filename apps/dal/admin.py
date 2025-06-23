@@ -1,10 +1,9 @@
 from django.contrib import admin
 
-from apps.dal.models import (Assessment, BaseAnswer, BaseQuestion,
-                             EssayAnswerRubric, EssayAnswerSubmission,
-                             EssayQuestion, Leaderboard, LeaderboardEntry,
-                             McqAnswer, McqAnswerSubmission, McqQuestion,
-                             Module, PhishingScenario, Simulation,
+from apps.dal.models import (Assessment, EssayAnswerRubric,
+                             EssayAnswerSubmission, EssayQuestion, Leaderboard,
+                             LeaderboardEntry, McqAnswer, McqAnswerSubmission,
+                             McqQuestion, Module, PhishingScenario, Simulation,
                              UserAssessments, UserModule, UserPhishingScenario)
 
 admin.site.register(Assessment)
@@ -16,10 +15,8 @@ admin.site.register(UserModule)
 admin.site.register(Simulation)
 admin.site.register(Leaderboard)
 admin.site.register(LeaderboardEntry)
-admin.site.register(BaseQuestion)
 admin.site.register(McqQuestion)
 admin.site.register(EssayQuestion)
-admin.site.register(BaseAnswer)
 admin.site.register(McqAnswer)
 admin.site.register(EssayAnswerRubric)
 admin.site.register(PhishingScenario)
