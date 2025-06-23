@@ -17,12 +17,6 @@ class UserPhishingScenarioUpdateView(APIView):
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        if user_phishing_scenario.status != UserSimulationStatus.IDLE:
-            return Response(
-                {"detail": "UserPhishingScenario is not in IDLE status."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
         serializer = UserPhishingScenarioUpdateSerializer(
             user_phishing_scenario,
             data={"status": UserSimulationStatus.FAILED},
