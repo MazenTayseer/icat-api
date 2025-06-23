@@ -30,7 +30,7 @@ class UserPhishingScenarioUpdateViewTestCase(SimulatorBaseTestCase):
         self.assertEqual(response.data['detail'], "UserPhishingScenario status updated successfully.")
 
     def test_update_user_phishing_scenario_not_idle(self):
-        self.user_phishing_scenario.status = UserSimulationStatus.PASSED
+        self.user_phishing_scenario.status = UserSimulationStatus.PASSED_OR_IGNORED
         self.user_phishing_scenario.save()
 
         url = f"{self.simulator_url}/{self.user_phishing_scenario.id}/update/"
