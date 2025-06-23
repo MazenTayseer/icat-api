@@ -15,6 +15,7 @@ class PhishingScenario(models.Model):
         on_delete=models.CASCADE,
         related_name='simulations',
     )
+    name = models.CharField(max_length=255, blank=False, null=False)
     tag = models.CharField(max_length=255, blank=False, null=False)
     subject = models.CharField(max_length=255, blank=False, null=False)
     seed = models.TextField(blank=False, null=False)
@@ -26,7 +27,7 @@ class PhishingScenario(models.Model):
         app_label = 'dal'
 
     def __str__(self):
-        return self.tag
+        return self.name
 
 
 class UserPhishingScenario(models.Model):

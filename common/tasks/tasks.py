@@ -20,6 +20,8 @@ def send_phising_email():
                 gemini_client=gemini_client
             )
             scenario = phishing_simulator.pick_scenario()
+            if not scenario:
+                continue
             user_scenario = UserPhishingScenario(
                 user=user,
                 phishing_scenario=scenario

@@ -54,5 +54,5 @@ class PhishingSimulator:
             subject=subject,
             message=email_body,
             to=recipient_email,
-            sender_name=scenario.tag
+            sender_name=scenario.name
         )
