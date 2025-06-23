@@ -200,12 +200,12 @@ class SubmissionSerializer(serializers.Serializer):
             id=user_assessment.id
         ).aggregate(
             max_user_score=models.Max('score')
-        )['max_user_score']
+        )['max_user_score'] or 0
 
         # Update leaderboard if this is the first attempt or a new high score
         if assessment.type == AssessmentType.MODULE:
-            if previous_best_score is None or total_user_score > previous_best_score:
-                self.__update_user_leaderboard_entry(user, total_user_score)
+            if total_user_score >= previous_best_score:
+                self.__update_user_leaderboard_entry(user, total_user_score - previous_best_score)
         return user_assessment
 
 

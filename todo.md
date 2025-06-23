@@ -22,4 +22,5 @@
 - emails work real ✅
 - check submissions ✅
 - refresh token ✅ (t2reeban)
-- update status of phishing to success (not important rn)
+- update status of phishing to success (not important rn) ✅
+- total score leaderboard ✅

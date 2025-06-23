@@ -16,6 +16,6 @@ app.autodiscover_tasks(['common.tasks.tasks'])
 app.conf.beat_schedule = {
     'send_phising_email': {
         'task': 'common.tasks.tasks.send_phising_email',
-        'schedule': crontab(hour=16, minute=0),
+        'schedule': crontab(hour=16, minute=0), # can be changed to run every 5 days
     }
 }
