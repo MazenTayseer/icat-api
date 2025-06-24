@@ -1,6 +1,5 @@
 from django.db import models
 
-from common.clients.chroma_client import ChromaClient
 from common.utils import generate_uuid
 
 
@@ -19,14 +18,6 @@ class Module(models.Model):
 
     class Meta:
         app_label = 'dal'
-
-    def save(self, *args, **kwargs):
-        if self._state.adding:
-            chroma_client = ChromaClient()
-            if not chroma_client.document_exists(self.id):
-                chroma_client.add_document(self)
-
-            super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name

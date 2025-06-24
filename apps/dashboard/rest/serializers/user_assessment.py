@@ -9,7 +9,6 @@ from apps.dal.models.enums.ai_roles import AIRole
 from apps.dal.models.enums.assessment_type import AssessmentType
 from apps.dal.models.enums.leaderboard_type import LeaderboardType
 from apps.dal.models.leaderboard import Leaderboard, LeaderboardEntry
-from apps.dal.models.module import Module
 from apps.dal.models.user_assessment import (EssayAnswerSubmission,
                                              McqAnswerSubmission,
                                              UserAssessments)
@@ -36,19 +35,55 @@ class SubmissionSerializer(serializers.Serializer):
 
     def __get_context_hits(self, answers):
         chroma_client = ChromaClient()
-        for answer in answers.get("mcq"):
-            question = answer.get('question').get('text')
-            ctx_hits = chroma_client.search_documents(question)
-            answer["context"] = []
-            for ctx_hit in Module.objects.filter(id__in=ctx_hits):
-                answer["context"].append(ctx_hit.text)
+        gemini_client = GeminiClient()
 
-        for answer in answers.get("essay"):
-            question = answer.get('question').get('text')
-            ctx_hits = chroma_client.search_documents(question)
-            answer["context"] = []
-            for ctx_hit in Module.objects.filter(id__in=ctx_hits):
-                answer["context"].append(ctx_hit.text)
+        for answer in answers.get("mcq", []):
+            question = answer.get('question', {}).get('text', '')
+            if question:
+                try:
+                    question_embedding = gemini_client.embed(question)
+
+                    search_results = chroma_client.search_with_embeddings(
+                        query_embedding=question_embedding,
+                        top_k=3
+                    )
+
+                    context_chunks = []
+                    if (search_results and search_results.get("documents") and
+                        search_results["documents"] and search_results["documents"][0]):
+                        for text_chunk in search_results["documents"][0]:
+                            context_chunks.append(text_chunk)
+
+                    answer["context"] = context_chunks
+
+                except Exception:
+                    answer["context"] = []
+            else:
+                answer["context"] = []
+
+        for answer in answers.get("essay", []):
+            question = answer.get('question', {}).get('text', '')
+            if question:
+                try:
+                    question_embedding = gemini_client.embed(question)
+
+                    search_results = chroma_client.search_with_embeddings(
+                        query_embedding=question_embedding,
+                        top_k=3
+                    )
+
+                    context_chunks = []
+                    if (search_results and search_results.get("documents") and
+                        search_results["documents"] and search_results["documents"][0]):
+                        for text_chunk in search_results["documents"][0]:
+                            context_chunks.append(text_chunk)
+
+                    answer["context"] = context_chunks
+
+                except Exception:
+                    answer["context"] = []
+            else:
+                answer["context"] = []
 
         return answers
 

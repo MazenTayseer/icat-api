@@ -53,3 +53,10 @@ class GeminiClient:
             return json.loads(stripped_content)
         except json.JSONDecodeError:
             return stripped_content
+
+    def embed(self, text: str) -> list[float]:
+        response = self.client.models.embed_content(
+            model=settings.GEMINI_EMBEDDING_MODEL,
+            contents=[text]
+        )
+        return response.embeddings[0].values

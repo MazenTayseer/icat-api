@@ -24,3 +24,4 @@
 - refresh token ✅ (t2reeban)
 - update status of phishing to success (not important rn) ✅
 - total score leaderboard ✅
+- check RAG ✅
