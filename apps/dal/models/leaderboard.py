@@ -44,7 +44,7 @@ class LeaderboardEntry(models.Model):
         on_delete=models.CASCADE,
         related_name='leaderboard_entry'
     )
-    total_score = models.FloatField(default=0.0, db_index=True)
+    total_score = models.IntegerField(default=0, db_index=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
