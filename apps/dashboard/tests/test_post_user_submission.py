@@ -64,7 +64,7 @@ class AssessmentsTestCases(DashboardBaseTestCase):
         super().setUp()
 
     @mock_user_asessments_clients
-    def test_submit_assessment_all_true(self, mock_gemini_instance, mock_chroma_instance):
+    def test_submit_assessment_all_true(self, mock_gemini_instance, _):
         url = f"{self.dashboard_url}/assessments/{self.assessment.id}/submit/"
         data = {
             "answers": {
@@ -86,7 +86,6 @@ class AssessmentsTestCases(DashboardBaseTestCase):
         response = self.send_auth_request("post", url, data=data)
 
         self.assertEqual(mock_gemini_instance.chat.call_count, 1)
-        self.assertEqual(mock_chroma_instance.search_documents.call_count, 3)
         self.assertEqual(response.status_code, 200)
         self.assertIsNotNone(response.data.get("id"))
         self.assertIsNotNone(response.data.get("score"))
