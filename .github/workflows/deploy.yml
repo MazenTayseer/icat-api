@@ -1,94 +1,94 @@
-name: Deploy to Azure VM
+# name: Deploy to Azure VM
 
-on:
-  push:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - main
 
-jobs:
-  Deploy:
-    name: Deploy to Azure VM
-    runs-on: ubuntu-latest
+# jobs:
+#   Deploy:
+#     name: Deploy to Azure VM
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
+#       - name: Set up Python
+#         uses: actions/setup-python@v5
+#         with:
+#           python-version: '3.x'
 
-      - name: Install dependencies
-        run: |
-          python3 -m pip install --upgrade pip
-          pip install ansible
+#       - name: Install dependencies
+#         run: |
+#           python3 -m pip install --upgrade pip
+#           pip install ansible
 
-      - name: Copy files to Azure VM
-        uses: easingthemes/ssh-deploy@v2.1.5
-        with:
-          SSH_PRIVATE_KEY: ${{ secrets.AZURE_VM_PRIVATE_KEY }}
-          REMOTE_HOST: ${{ secrets.AZURE_VM_HOST }}
-          REMOTE_USER: ${{ secrets.AZURE_VM_USERNAME }}
-          SOURCE: './'
-          TARGET: /home/icat-api/icat/
+#       - name: Copy files to Azure VM
+#         uses: easingthemes/ssh-deploy@v2.1.5
+#         with:
+#           SSH_PRIVATE_KEY: ${{ secrets.AZURE_VM_PRIVATE_KEY }}
+#           REMOTE_HOST: ${{ secrets.AZURE_VM_HOST }}
+#           REMOTE_USER: ${{ secrets.AZURE_VM_USERNAME }}
+#           SOURCE: './'
+#           TARGET: /home/icat-api/icat/
 
-      - name: Run remote deployment script on Azure VM
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.AZURE_VM_HOST }}
-          username: ${{ secrets.AZURE_VM_USERNAME }}
-          key: ${{ secrets.AZURE_VM_PRIVATE_KEY }}
-          script: |
-            sudo apt-get update
-            sudo apt-get install -y pkg-config python3-dev default-libmysqlclient-dev build-essential
+#       - name: Run remote deployment script on Azure VM
+#         uses: appleboy/ssh-action@v1.0.0
+#         with:
+#           host: ${{ secrets.AZURE_VM_HOST }}
+#           username: ${{ secrets.AZURE_VM_USERNAME }}
+#           key: ${{ secrets.AZURE_VM_PRIVATE_KEY }}
+#           script: |
+#             sudo apt-get update
+#             sudo apt-get install -y pkg-config python3-dev default-libmysqlclient-dev build-essential
 
-            cd /home/icat-api/icat/
+#             cd /home/icat-api/icat/
 
-            rm -rf env
-            rm -rf .env
-            python3 -m venv env
-            source env/bin/activate
+#             rm -rf env
+#             rm -rf .env
+#             python3 -m venv env
+#             source env/bin/activate
 
-            pip install -r requirements.txt
+#             pip install -r requirements.txt
 
-            touch .env
-            echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
-            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
-            echo "ACCESS_TOKEN_LIFETIME=${{ secrets.ACCESS_TOKEN_LIFETIME }}" >> .env
-            echo "REFRESH_TOKEN_LIFETIME=${{ secrets.REFRESH_TOKEN_LIFETIME }}" >> .env
-            echo "EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" >> .env
-            echo "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >> .env
-            echo "CELERY_BROKER_URL=${{ secrets.CELERY_BROKER_URL }}" >> .env
-            echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
-            echo "GEMINI_MODEL=${{ secrets.GEMINI_MODEL }}" >> .env
-            echo "FRONTEND_URL=${{ secrets.FRONTEND_URL }}" >> .env
+#             touch .env
+#             echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+#             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+#             echo "ACCESS_TOKEN_LIFETIME=${{ secrets.ACCESS_TOKEN_LIFETIME }}" >> .env
+#             echo "REFRESH_TOKEN_LIFETIME=${{ secrets.REFRESH_TOKEN_LIFETIME }}" >> .env
+#             echo "EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" >> .env
+#             echo "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >> .env
+#             echo "CELERY_BROKER_URL=${{ secrets.CELERY_BROKER_URL }}" >> .env
+#             echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
+#             echo "GEMINI_MODEL=${{ secrets.GEMINI_MODEL }}" >> .env
+#             echo "FRONTEND_URL=${{ secrets.FRONTEND_URL }}" >> .env
 
-            echo "export SECRET_KEY='${{ secrets.SECRET_KEY }}'" >> env/bin/activate
-            echo "export DATABASE_URL='${{ secrets.DATABASE_URL }}'" >> env/bin/activate
-            echo "export ACCESS_TOKEN_LIFETIME='${{ secrets.ACCESS_TOKEN_LIFETIME }}'" >> env/bin/activate
-            echo "export REFRESH_TOKEN_LIFETIME='${{ secrets.REFRESH_TOKEN_LIFETIME }}'" >> env/bin/activate
-            echo "export EMAIL_HOST_USER='${{ secrets.EMAIL_HOST_USER }}'" >> env/bin/activate
-            echo "export EMAIL_HOST_PASSWORD='${{ secrets.EMAIL_HOST_PASSWORD }}'" >> env/bin/activate
-            echo "export CELERY_BROKER_URL='${{ secrets.CELERY_BROKER_URL }}'" >> env/bin/activate
-            echo "export GEMINI_API_KEY='${{ secrets.GEMINI_API_KEY }}'" >> env/bin/activate
-            echo "export GEMINI_MODEL='${{ secrets.GEMINI_MODEL }}'" >> env/bin/activate
-            echo "export FRONTEND_URL='${{ secrets.FRONTEND_URL }}'" >> env/bin/activate
+#             echo "export SECRET_KEY='${{ secrets.SECRET_KEY }}'" >> env/bin/activate
+#             echo "export DATABASE_URL='${{ secrets.DATABASE_URL }}'" >> env/bin/activate
+#             echo "export ACCESS_TOKEN_LIFETIME='${{ secrets.ACCESS_TOKEN_LIFETIME }}'" >> env/bin/activate
+#             echo "export REFRESH_TOKEN_LIFETIME='${{ secrets.REFRESH_TOKEN_LIFETIME }}'" >> env/bin/activate
+#             echo "export EMAIL_HOST_USER='${{ secrets.EMAIL_HOST_USER }}'" >> env/bin/activate
+#             echo "export EMAIL_HOST_PASSWORD='${{ secrets.EMAIL_HOST_PASSWORD }}'" >> env/bin/activate
+#             echo "export CELERY_BROKER_URL='${{ secrets.CELERY_BROKER_URL }}'" >> env/bin/activate
+#             echo "export GEMINI_API_KEY='${{ secrets.GEMINI_API_KEY }}'" >> env/bin/activate
+#             echo "export GEMINI_MODEL='${{ secrets.GEMINI_MODEL }}'" >> env/bin/activate
+#             echo "export FRONTEND_URL='${{ secrets.FRONTEND_URL }}'" >> env/bin/activate
 
-            deactivate
-            source env/bin/activate
+#             deactivate
+#             source env/bin/activate
 
-            python3 manage.py migrate
-            python3 manage.py collectstatic --noinput
+#             python3 manage.py migrate
+#             python3 manage.py collectstatic --noinput
 
-            # Set permissions for static files
-            sudo chown -R $USER:$USER /home/icat-api/icat/staticfiles
-            chmod -R u+rw /home/icat-api/icat/staticfiles
+#             # Set permissions for static files
+#             sudo chown -R $USER:$USER /home/icat-api/icat/staticfiles
+#             chmod -R u+rw /home/icat-api/icat/staticfiles
 
-            sudo systemctl daemon-reexec
-            sudo systemctl daemon-reload
-            sudo systemctl restart gunicorn
+#             sudo systemctl daemon-reexec
+#             sudo systemctl daemon-reload
+#             sudo systemctl restart gunicorn
 
-            # sudo mkdir -p /var/log/celery
-            # sudo chmod 777 /var/log/celery
-            # bash configs/conf.d/deploy-celery.sh
+#             # sudo mkdir -p /var/log/celery
+#             # sudo chmod 777 /var/log/celery
+#             # bash configs/conf.d/deploy-celery.sh
