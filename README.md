@@ -35,18 +35,3 @@
 - run app
   ```bash
     python manage.py runserver
-  ```
-
-### .env variables
-
-- go to `.venv/Scripts/activate`
-- scroll to the bottom and add
-  ```bash
-    export DATABASE_URL=mysql://root:root@127.0.0.1:3306/icat
-    export ACCESS_TOKEN_LIFETIME=3600     # 1 hour
-    export REFRESH_TOKEN_LIFETIME=604800  # 1 week
-  ```
-- every time you change the variables, you have to re-activate the env
-  ```bash
-    source .venv/Scripts/activate
-  ```
